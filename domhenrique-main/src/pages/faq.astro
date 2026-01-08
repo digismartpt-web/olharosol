@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { faqSection } from '../content/website-text.js';
+
+---
+
+<Layout title="Questions fréquentes" description="EDécouvrez les réponses aux questions les plus courantes et contactez-nous pour toute information complémentaire. ">
+  <div class="pt-20">
+    <!-- Hero Section -->
+    <section class="relative py-20 bg-gradient-to-b from-gray-900 to-gray-800">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
+            Perguntas Frequentes
+          </h1>
+          <p class="text-xl text-gray-300">
+            Découvrez les réponses aux questions les plus courantes et contactez-nous pour toute information complémentaire. 
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="grid gap-6">
+            {faqSection.questions.map((faq, index) => (
+              <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <details class="group">
+                  <summary class="flex items-center justify-between p-6 cursor-pointer">
+                    <h2 class="text-xl font-semibold text-gray-900">{faq.question}</h2>
+                    <span class="relative flex-shrink-0 ml-4">
+                      <svg 
+                        class="w-6 h-6 text-primary transition-transform duration-300 group-open:rotate-180" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          stroke-width="2" 
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </span>
+                  </summary>
+                  <div class="px-6 pb-6 text-gray-600">
+                    <p>{faq.answer}</p>
+                  </div>
+                </details>
+              </div>
+            ))}
+          </div>
+
+          <!-- Contact CTA -->
+          <div class="mt-16 text-center">
+            <div class="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-8">
+              <h2 class="text-2xl font-bold mb-4">Vous n’avez pas trouvé ce que vous cherchiez ?</h2>
+              <p class="text-gray-600 mb-8">
+                 Notre équipe est à votre disposition pour répondre à toutes vos questions.
+              </p>
+              <a 
+                href="/contact" 
+                class="inline-block bg-primary hover:bg-secondary text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105"
+              >
+                Contactez-nous.
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

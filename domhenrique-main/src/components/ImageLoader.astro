@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  className?: string;
+  width?: number;
+  height?: number;
+}
+
+const { src, alt, className = "", width = 800, height = 600 } = Astro.props;
+---
+
+<div class={`image-loader ${className}`}>
+  <Image 
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+    class="lazyload blur-up"
+    style={{
+      opacity: 0,
+      transition: 'opacity 0.3s ease-in-out'
+    }}
+    onload="this.style.opacity=1"
+  />
+  <noscript>
+    <img src={src} alt={alt} class={className} width={width} height={height} />
+  </noscript>
+</div>
+
+<style>
+  .image-loader {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blur-up {
+    filter: blur(5px);
+    transition: filter 0.3s ease-in-out;
+  }
+
+  .blur-up.lazyloaded {
+    filter: blur(0);
+  }
+</style>

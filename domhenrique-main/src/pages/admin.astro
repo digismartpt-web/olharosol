@@ -1,0 +1,693 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Admin - Dom Henrique">
+  <div class="min-h-screen bg-gray-100 pt-24 pb-12">
+    <div class="container mx-auto px-4">
+      
+      <!-- LOGIN VIEW -->
+      <div id="login-view" class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 hidden">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Acesso Reservado</h1>
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+          </div>
+          <p id="login-error" class="text-red-500 text-sm hidden">Erro de autenticação.</p>
+          <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary font-bold">Entrar</button>
+        </form>
+      </div>
+
+      <!-- DASHBOARD VIEW -->
+      <div id="dashboard-view" class="hidden space-y-8">
+        <header class="flex justify-between items-center mb-8">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p class="text-gray-500">Bem-vindo, Chefe.</p>
+          </div>
+          <button id="logout-btn" class="text-red-600 hover:text-red-800 font-medium">Sair</button>
+        </header>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          
+          <!-- LEFT: RESERVATIONS LIST -->
+          <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl shadow p-6 min-h-[500px] flex flex-col">
+              <h2 class="text-xl font-bold mb-6 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Reservas
+                </span>
+                
+                <!-- Filters Toolbar -->
+                <div class="flex items-center gap-2 text-sm">
+                    <input type="date" id="filter-date" class="border rounded px-3 py-2 text-gray-700 bg-gray-50 focus:bg-white transition-colors outline-none cursor-pointer" title="Filtrar por data">
+                    <button id="btn-show-all" class="px-4 py-2 rounded font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">
+                        Todas
+                    </button>
+                    <button id="btn-delete-day" class="px-4 py-2 rounded font-medium bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-1" title="Eliminar todas as reservas do dia selecionado">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Eliminar Todas
+                    </button>
+                </div>
+              </h2>
+
+              <!-- List Container (Scrollable or auto) -->
+              <div id="reservations-list" class="space-y-3 flex-grow mb-4">
+                <p class="text-gray-400 text-center py-4">Carregando...</p>
+              </div>
+
+              <!-- Pagination Controls -->
+              <div class="border-t pt-4 flex justify-between items-center text-sm text-gray-600">
+                <span id="page-info">Página 1</span>
+                <div class="flex gap-2">
+                    <button id="btn-prev" disabled class="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        &larr; Anterior
+                    </button>
+                    <button id="btn-next" disabled class="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Próxima &rarr;
+                    </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: SETTINGS -->
+          <div class="space-y-6">
+            <div class="bg-white rounded-xl shadow p-6 border-t-4 border-primary">
+              <h2 class="text-xl font-bold mb-4">Configuração</h2>
+              <form id="settings-form" class="space-y-4">
+                
+                <div>
+                  <h3 class="font-semibold text-gray-700 mb-2 border-b pb-1">Dias Fechados</h3>
+                  <div class="grid grid-cols-3 gap-3 text-sm">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="1" class="text-primary focus:ring-primary rounded"> Segunda
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="2" class="text-primary focus:ring-primary rounded"> Terça
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="3" class="text-primary focus:ring-primary rounded"> Quarta
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="4" class="text-primary focus:ring-primary rounded"> Quinta
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="5" class="text-primary focus:ring-primary rounded"> Sexta
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="6" class="text-primary focus:ring-primary rounded"> Sábado
+                    </label>
+                     <label class="flex items-center gap-2">
+                        <input type="checkbox" name="closed" value="0" class="text-primary focus:ring-primary rounded"> Domingo
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 class="font-semibold text-gray-700 mb-2 border-b pb-1">Período de Férias</h3>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-600">Início</label>
+                        <input type="date" id="vacation-start" class="w-full px-2 py-1 border rounded text-sm outline-none focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600">Fim</label>
+                        <input type="date" id="vacation-end" class="w-full px-2 py-1 border rounded text-sm outline-none focus:ring-1 focus:ring-primary">
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between mt-2">
+                    <p class="text-[10px] text-gray-400">Selecione as datas para fechar o restaurante.</p>
+                    <button type="button" id="clear-vacation" class="text-[10px] text-red-500 hover:text-red-700 font-medium group flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      Limpar Férias
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 class="font-semibold text-gray-700 mb-2 border-b pb-1">Horário de Serviço (Horas)</h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-4">
+                    <div class="space-y-2">
+                        <label class="block font-medium text-gray-600">Almoço</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="number" id="lunch-start" min="0" max="23" placeholder="12" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none">
+                            <span>às</span>
+                            <input type="number" id="lunch-end" min="0" max="23" placeholder="15" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block font-medium text-gray-600">Jantar</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="number" id="dinner-start" min="0" max="23" placeholder="19" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none">
+                            <span>às</span>
+                            <input type="number" id="dinner-end" min="0" max="23" placeholder="22" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="mb-6">
+                  <h3 class="font-semibold text-gray-700 mb-2 border-b pb-1">Configuração de Mesas</h3>
+                  <div class="space-y-2 mb-3">
+                    <div id="tables-list" class="space-y-2">
+                      <!-- Dynamic table rows will be inserted here -->
+                    </div>
+                    <button type="button" id="add-table-btn" class="text-sm px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      Adicionar Mesa
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+                    💡 <strong>Dica:</strong> O sistema pode combinar mesas automaticamente (ex: 2 mesas de 4 = 8 pessoas).
+                  </div>
+                </div>
+
+                <div>
+                  <h3 class="font-semibold text-gray-700 mb-2 border-b pb-1">Configurações de Disponibilidade</h3>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-600 font-medium">Max Pessoas / Reserva</label>
+                        <input type="number" id="max-guests" min="1" max="50" value="8" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 font-medium">Antecedência Mínima (min)</label>
+                        <input type="number" id="min-advance" min="0" max="1440" value="30" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none" title="Tempo mínimo antes do horário para aceitar reservas">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 font-medium">Duração da Reserva (min)</label>
+                        <input type="number" id="res-duration" min="15" max="240" value="60" class="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-primary outline-none" title="Tempo que uma mesa fica ocupada por cada reserva">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2">
+                  <button type="submit" class="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 text-sm font-medium">
+                    Salvar Configuração
+                  </button>
+                  <p id="save-msg" class="text-green-600 text-xs mt-2 text-center hidden">Guardado com sucesso!</p>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { auth, db } from "../lib/firebase.js";
+  import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+  import { collection, query, orderBy, onSnapshot, doc, setDoc, getDoc, where, deleteDoc } from "firebase/firestore";
+
+  const loginView = document.getElementById('login-view');
+  const dashboardView = document.getElementById('dashboard-view');
+  const loginForm = document.getElementById('login-form');
+  const logoutBtn = document.getElementById('logout-btn');
+  const resList = document.getElementById('reservations-list');
+  const settingsForm = document.getElementById('settings-form');
+  
+  const tablesListContainer = document.getElementById('tables-list');
+  const addTableBtn = document.getElementById('add-table-btn');
+  
+  // TABLE MANAGEMENT STATE
+  let tablesData = []; // { id, name, capacity, combinable }
+  let tableIdCounter = 1;
+  
+  // TABLE ROW CREATION
+  function createTableRow(table) {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 p-2 bg-gray-50 rounded border';
+      row.dataset.tableId = table.id;
+      
+      const isCombinable = table.combinable !== false; // Default true
+      
+      row.innerHTML = `
+          <input type="text" 
+                 value="${table.name}" 
+                 placeholder="Mesa 1" 
+                 class="table-name flex-1 px-2 py-1 border rounded text-sm"
+                 data-table-id="${table.id}">
+          <input type="number" 
+                 value="${table.capacity}" 
+                 min="1" 
+                 max="20" 
+                 placeholder="Cap." 
+                 class="table-capacity w-16 px-2 py-1 border rounded text-sm"
+                 data-table-id="${table.id}">
+          <span class="text-xs text-gray-500">pessoas</span>
+          <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer" title="Pode ser combinada com outras mesas">
+              <input type="checkbox" 
+                     class="table-combinable"
+                     data-table-id="${table.id}"
+                     ${isCombinable ? 'checked' : ''}>
+              <span>Combinável</span>
+          </label>
+          <button type="button" 
+                  class="remove-table-btn text-red-500 hover:text-red-700 px-2"
+                  data-table-id="${table.id}">
+              ×
+          </button>
+      `;
+      
+      return row;
+  }
+  
+  function renderTables() {
+      tablesListContainer.innerHTML = '';
+      if (tablesData.length === 0) {
+          tablesListContainer.innerHTML = '<p class="text-sm text-gray-400 italic">Nenhuma mesa configurada. Clique em "Adicionar Mesa".</p>';
+      } else {
+          tablesData.forEach(table => {
+              tablesListContainer.appendChild(createTableRow(table));
+          });
+      }
+      
+      // Attach remove handlers
+      document.querySelectorAll('.remove-table-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              const tableId = e.target.dataset.tableId;
+              tablesData = tablesData.filter(t => t.id !== tableId);
+              renderTables();
+          });
+      });
+  }
+  
+  // ADD TABLE HANDLER
+  if (addTableBtn) {
+      addTableBtn.addEventListener('click', () => {
+          const newTable = {
+              id: `t${tableIdCounter++}`,
+              name: `Mesa ${tablesData.length + 1}`,
+              capacity: 4,
+              combinable: true // Default: combinable
+          };
+          tablesData.push(newTable);
+          renderTables();
+      });
+  }
+  
+  // AUTH STATE
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginView.classList.add('hidden');
+      dashboardView.classList.remove('hidden');
+      initDashboard();
+    } else {
+      loginView.classList.remove('hidden');
+      dashboardView.classList.add('hidden');
+    }
+  });
+
+  // LOGIN
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      document.getElementById('login-error').classList.remove('hidden');
+    }
+  });
+
+  // LOGOUT
+  logoutBtn.addEventListener('click', () => signOut(auth));
+
+  // DASHBOARD LOGIC
+  let allReservations = [];
+  let currentPage = 1;
+  const itemsPerPage = 8;
+  let currentFilterDate = new Date().toISOString().split('T')[0]; // Default to Today
+
+  // UI Elements
+  const filterDateInput = document.getElementById('filter-date') as HTMLInputElement;
+  const btnShowAll = document.getElementById('btn-show-all');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const pageInfo = document.getElementById('page-info');
+  const btnDeleteDay = document.getElementById('btn-delete-day');
+  
+  // Set default date in input
+  if(filterDateInput) filterDateInput.value = currentFilterDate;
+
+  // Initial Load
+  // Initial Load handled by initDashboard
+  // subscribeToReservations(); // REMOVED
+
+  // Listeners
+  if(filterDateInput) {
+      filterDateInput.addEventListener('change', (e) => {
+          currentFilterDate = (e.target as HTMLInputElement).value;
+          currentPage = 1;
+          subscribeToReservations();
+          updateFilterVisuals();
+      });
+  }
+
+  if(btnShowAll) {
+      btnShowAll.addEventListener('click', () => {
+          currentFilterDate = null;
+          if(filterDateInput) filterDateInput.value = '';
+          currentPage = 1;
+          subscribeToReservations();
+          updateFilterVisuals();
+      });
+  }
+
+  // BULK DELETE HANDLER
+  if(btnDeleteDay) {
+      btnDeleteDay.addEventListener('click', async () => {
+          if (!currentFilterDate) {
+              alert('Por favor selecione uma data específica para eliminar as reservas.');
+              return;
+          }
+
+          const count = allReservations.length;
+          if (count === 0) {
+              alert('Não há reservas para eliminar nesta data.');
+              return;
+          }
+
+          try {
+              // Delete all reservations for the current date
+              const deletePromises = allReservations.map(res => 
+                  deleteDoc(doc(db, "reservations", res.id))
+              );
+              await Promise.all(deletePromises);
+              alert(`✅ ${count} reserva(s) eliminada(s) com sucesso.`);
+              // onSnapshot will auto-refresh
+          } catch (err) {
+              console.error("Error deleting reservations:", err);
+              alert("Erro ao eliminar as reservas.");
+          }
+      });
+  }
+
+  if(btnPrev) {
+      btnPrev.addEventListener('click', () => {
+          if (currentPage > 1) {
+              currentPage--;
+              renderList();
+          }
+      });
+  }
+
+  if(btnNext) {
+      btnNext.addEventListener('click', () => {
+          const totalPages = Math.ceil(allReservations.length / itemsPerPage);
+          if (currentPage < totalPages) {
+              currentPage++;
+              renderList();
+          }
+      });
+  }
+
+  function updateFilterVisuals() {
+      if (currentFilterDate) {
+          btnShowAll.classList.remove('bg-primary', 'text-white');
+          btnShowAll.classList.add('bg-gray-200', 'text-gray-700');
+          filterDateInput.classList.add('border-primary', 'ring-1', 'ring-primary');
+      } else {
+          btnShowAll.classList.add('bg-primary', 'text-white');
+          btnShowAll.classList.remove('bg-gray-200', 'text-gray-700');
+          filterDateInput.classList.remove('border-primary', 'ring-1', 'ring-primary');
+      }
+  }
+
+  // CORE FUNCTIONS
+  let unsubscribe = null;
+
+  function subscribeToReservations() {
+    if (unsubscribe) unsubscribe();
+
+    let q;
+    if (currentFilterDate) {
+        // Filter by Date
+        q = query(collection(db, "reservations"), where("date", "==", currentFilterDate));
+    } else {
+        // Show All
+        q = query(collection(db, "reservations"), orderBy("date", "desc"));
+    }
+
+    unsubscribe = onSnapshot(q, (snapshot) => {
+      allReservations = [];
+      snapshot.forEach((doc) => {
+        allReservations.push({ id: doc.id, ...doc.data() });
+      });
+      
+      // Sort locally to avoid complex Firestore indexes
+      allReservations.sort((a, b) => {
+          // Primary sort: Date (Desc if show all, same if filter)
+          if (a.date !== b.date) {
+              return b.date.localeCompare(a.date);
+          }
+          // Secondary sort: Time (Asc)
+          return a.time.localeCompare(b.time);
+      });
+
+      renderList();
+    }, (error) => {
+        console.error("Firestore Subscribe Error:", error);
+        resList.innerHTML = `<p class="text-red-500 text-center py-4">Erro ao carregar reservas: ${error.message}</p>`;
+    });
+  }
+
+  function renderList() {
+    resList.innerHTML = '';
+    
+    // Pagination Logic
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = allReservations.slice(start, end);
+    const totalPages = Math.ceil(allReservations.length / itemsPerPage) || 1;
+
+    // Update Controls
+    pageInfo.textContent = `Página ${currentPage} de ${totalPages} (${allReservations.length} total)`;
+    btnPrev.disabled = currentPage === 1;
+    btnNext.disabled = currentPage === totalPages;
+    btnPrev.classList.toggle('opacity-50', currentPage === 1);
+    btnNext.classList.toggle('opacity-50', currentPage === totalPages);
+
+    if (pageItems.length === 0) {
+      resList.innerHTML = '<p class="text-gray-500 text-center italic py-8">Nenhuma reserva encontrada para este filtro.</p>';
+      return;
+    }
+
+    pageItems.forEach((data) => {
+      // Card Color Status (Past vs Future)
+      const resDate = new Date(data.date + 'T' + data.time);
+      const isPast = resDate < new Date();
+      const statusColor = isPast ? 'border-gray-300 bg-gray-50 opacity-75' : 'border-primary bg-white';
+      const statusText = isPast ? '<span class="text-gray-500">Passado</span>' : '<span class="text-green-600 font-bold">Confirmado</span>';
+
+      const el = document.createElement('div');
+      el.className = `flex justify-between items-center p-4 rounded-lg border-l-4 shadow-sm ${statusColor}`;
+      
+      // Table badge (if Advanced mode and table assigned)
+      const tableBadge = data.assignedTableName 
+          ? `<span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">📍 ${data.assignedTableName}</span>`
+          : '';
+      
+      el.innerHTML = `
+        <div>
+          <div class="font-bold text-lg text-gray-800 flex items-center gap-2">
+             ${data.time} 
+             <span class="text-sm font-normal text-gray-500">(${data.date})</span>
+             ${tableBadge}
+          </div>
+          <div class="text-gray-800 font-medium">${data.name}</div>
+          <div class="text-sm text-gray-500 flex items-center gap-2 mt-1">
+            <span class="bg-gray-200 px-2 rounded-full text-xs font-bold text-gray-700">${data.guests} Pessoas</span>
+            <span>${data.phone}</span>
+          </div>
+        </div>
+        <div class="text-right flex flex-col items-end gap-2">
+           <div class="text-xs uppercase tracking-wide bg-gray-100 px-2 py-1 rounded">${statusText}</div>
+           <a href="mailto:${data.email}" class="text-xs text-primary hover:underline">${data.email}</a>
+           <button 
+              class="delete-btn text-red-500 hover:text-red-700 text-xs flex items-center gap-1 mt-1 transition-colors"
+              data-id="${data.id}"
+              title="Supprimer cette réservation"
+           >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar
+           </button>
+        </div>
+      `;
+      resList.appendChild(el);
+    });
+
+    // Attach delete handlers (Event Delegation)
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const reservationId = (e.currentTarget as HTMLElement).getAttribute('data-id');
+        if (!reservationId) return;
+
+        const confirmed = confirm('⚠️ IMPORTANTE: Não se esqueça de ligar ao cliente para informá-lo do cancelamento!\n\nDeseja eliminar esta reserva?');
+        if (!confirmed) return;
+
+        try {
+          await deleteDoc(doc(db, "reservations", reservationId));
+          // The onSnapshot listener will auto-refresh the list
+        } catch (err) {
+          console.error("Error deleting reservation:", err);
+          alert("Erro ao eliminar a reserva.");
+        }
+      });
+    });
+  }
+
+  function initDashboard() {
+      subscribeToReservations();
+      loadSettings();
+  }
+
+  function loadSettings() {
+    const settingsDoc = doc(db, "settings", "general");
+    getDoc(settingsDoc).then(snap => {
+      if (snap.exists()) {
+        const data = snap.data();
+        (document.getElementById('max-guests') as HTMLInputElement).value = data.maxGuests || 8;
+        (document.getElementById('min-advance') as HTMLInputElement).value = data.minAdvance || 30;
+        (document.getElementById('res-duration') as HTMLInputElement).value = data.resDuration || 60;
+        
+        // Checkboxes
+        const closedDays = data.closedDays || [0, 1];
+        document.querySelectorAll('input[name="closed"]').forEach((cb: HTMLInputElement) => {
+           cb.checked = closedDays.includes(parseInt(cb.value));
+        });
+
+        // Vacation
+        if (data.vacationStart) (document.getElementById('vacation-start') as HTMLInputElement).value = data.vacationStart;
+        if (data.vacationEnd) (document.getElementById('vacation-end') as HTMLInputElement).value = data.vacationEnd;
+        
+        // Hours
+        (document.getElementById('lunch-start') as HTMLInputElement).value = data.lunchStart || 12;
+        (document.getElementById('lunch-end') as HTMLInputElement).value = data.lunchEnd || 15;
+        (document.getElementById('dinner-start') as HTMLInputElement).value = data.dinnerStart || 19;
+        (document.getElementById('dinner-end') as HTMLInputElement).value = data.dinnerEnd || 22;
+        
+        // Tables
+        if (data.tables && Array.isArray(data.tables)) {
+            tablesData = data.tables;
+            tableIdCounter = Math.max(...tablesData.map(t => parseInt(t.id.replace('t', ''))), 0) + 1;
+            renderTables();
+        }
+      }
+    });
+  }
+
+  document.getElementById('clear-vacation')?.addEventListener('click', () => {
+    (document.getElementById('vacation-start') as HTMLInputElement).value = '';
+    (document.getElementById('vacation-end') as HTMLInputElement).value = '';
+  });
+
+  // SAVE SETTINGS
+  settingsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = settingsForm.querySelector('button[type="submit"]');
+    const originalText = "Salvar Configuração";
+    
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">A guardar...</span>';
+    btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+    const maxGuests = (document.getElementById('max-guests') as HTMLInputElement).value;
+    const minAdvance = (document.getElementById('min-advance') as HTMLInputElement).value;
+    const resDuration = (document.getElementById('res-duration') as HTMLInputElement).value;
+    const vacationStart = (document.getElementById('vacation-start') as HTMLInputElement).value;
+    const vacationEnd = (document.getElementById('vacation-end') as HTMLInputElement).value;
+    
+    const lunchStart = (document.getElementById('lunch-start') as HTMLInputElement).value;
+    const lunchEnd = (document.getElementById('lunch-end') as HTMLInputElement).value;
+    const dinnerStart = (document.getElementById('dinner-start') as HTMLInputElement).value;
+    const dinnerEnd = (document.getElementById('dinner-end') as HTMLInputElement).value;
+
+    const closedDays = Array.from(document.querySelectorAll('input[name="closed"]:checked')).map((cb: HTMLInputElement) => parseInt(cb.value));
+    
+    // Validation: tables required
+    if (tablesData.length === 0) {
+        alert('É necessário configurar pelo menos 1 mesa.');
+        btn.disabled = false;
+        btn.textContent = originalText;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+        return;
+    }
+    
+    // Collect table data from inputs (sync with DOM)
+    const updatedTables = [];
+    document.querySelectorAll('.table-name').forEach((input: HTMLInputElement) => {
+        const tableId = input.dataset.tableId;
+        const capacityInput = document.querySelector(`.table-capacity[data-table-id="${tableId}"]`) as HTMLInputElement;
+        const combinableInput = document.querySelector(`.table-combinable[data-table-id="${tableId}"]`) as HTMLInputElement;
+        updatedTables.push({
+            id: tableId,
+            name: input.value || `Mesa ${updatedTables.length + 1}`,
+            capacity: parseInt(capacityInput.value) || 4,
+            combinable: combinableInput ? combinableInput.checked : true
+        });
+    });
+    tablesData = updatedTables;
+    
+    try {
+        const settingsData: any = {
+            maxGuests: parseInt(maxGuests),
+            minAdvance: parseInt(minAdvance),
+            resDuration: parseInt(resDuration),
+            closedDays: closedDays,
+            vacationStart: vacationStart,
+            vacationEnd: vacationEnd,
+            lunchStart: parseInt(lunchStart),
+            lunchEnd: parseInt(lunchEnd),
+            dinnerStart: parseInt(dinnerStart),
+            dinnerEnd: parseInt(dinnerEnd),
+            tables: tablesData,
+            tableMode: 'advanced' // Keep for compatibility if needed elsewhere
+        };
+        
+        await setDoc(doc(db, "settings", "general"), settingsData);
+
+        // Success state (Button visual change)
+        btn.textContent = "Guardado com Sucesso! ✅";
+        btn.classList.remove('bg-gray-800', 'hover:bg-gray-700');
+        btn.classList.add('bg-green-600', 'hover:bg-green-700', 'transition-all');
+
+        // Reset after 2s
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            btn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-green-600', 'hover:bg-green-700');
+            btn.classList.add('bg-gray-800', 'hover:bg-gray-700');
+        }, 2000);
+
+    } catch (err) {
+        console.error(err);
+        btn.textContent = "Erro ao guardar ❌";
+        setTimeout(() => {
+             btn.disabled = false;
+             btn.textContent = originalText;
+        }, 2000);
+    }
+  });
+
+</script>

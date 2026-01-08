@@ -1,0 +1,176 @@
+---
+const menuItems = [
+  { href: '/#home', text: 'Início' },
+  { href: '/#ementa', text: 'Ementa' },
+  { href: '/#galeria', text: 'Galeria' },
+  { href: '/#reservas', text: 'Reservas' },
+  { href: '/#contactos', text: 'Contactos' },
+];
+---
+
+<header class="bg-white shadow-md fixed w-full z-50">
+  <div class="container mx-auto px-4">
+    <nav class="flex items-center justify-between h-20">
+      <a href="/#home" class="flex items-center">
+        <!-- Text Logo -->
+        <span class="text-2xl font-serif font-bold text-primary">Dom Henrique</span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden lg:flex space-x-6 justify-center">
+        {menuItems.map(item => (
+          <div class="relative group">
+            <a
+              href={item.href}
+              class="text-gray-500 hover:text-primary transition-colors duration-200 flex items-center font-medium"
+            >
+              {item.text}
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button 
+        id="mobile-menu-button"
+        class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        aria-label="Menu"
+      >
+        <svg 
+          class="w-6 h-6 text-gray-600" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      <!-- Mobile Menu Panel -->
+      <div 
+        id="mobile-menu" 
+        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden"
+        aria-hidden="true"
+      >
+        <div class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-lg transform transition-transform duration-300 translate-x-full">
+          <div class="p-5">
+            <button 
+              id="close-menu-button"
+              class="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Fechar menu"
+            >
+              <svg 
+                class="w-6 h-6 text-gray-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <div class="mt-8 space-y-4">
+              {menuItems.map(item => (
+                <div>
+                  <a
+                    href={item.href}
+                    class="block py-3 text-lg text-gray-600 hover:text-primary transition-colors duration-200"
+                  >
+                    {item.text}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const closeMenuButton = document.getElementById('close-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuPanel = mobileMenu?.querySelector('div');
+
+  function openMenu() {
+    if (mobileMenu && mobileMenuPanel) {
+      mobileMenu.classList.remove('hidden');
+      setTimeout(() => {
+        mobileMenuPanel.classList.remove('translate-x-full');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeMenu() {
+    if (mobileMenu && mobileMenuPanel) {
+      mobileMenuPanel.classList.add('translate-x-full');
+      setTimeout(() => {
+        mobileMenu.classList.add('hidden');
+      }, 300);
+      document.body.style.overflow = '';
+    }
+  }
+
+  mobileMenuButton?.addEventListener('click', openMenu);
+  closeMenuButton?.addEventListener('click', closeMenu);
+  mobileMenu?.addEventListener('click', (e) => {
+    if (e.target === mobileMenu) {
+      closeMenu();
+    }
+  });
+
+  // Close menu when clicking on a link
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Gestion spéciale pour le lien Accueil
+  document.querySelectorAll('a[href="#home"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Smooth scroll pour les autres liens d'ancrage
+  document.querySelectorAll('a[href^="#"]:not([href="/#home"])').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      // e.preventDefault(); // On laisse le comportement par défaut pour les liens inter-pages si besoin, ou on adapte
+      // Ici on cible des ID sur la page d'accueil
+      const href = this.getAttribute('href');
+      // Si c'est juste un hash
+      if (href.startsWith('#')) {
+         e.preventDefault();
+         const target = document.querySelector(href);
+         if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+         }
+      } 
+      // Si c'est /#id et qu'on est sur /
+      else if (href.startsWith('/#')) {
+        const hash = href.substring(1); // #id
+        const target = document.querySelector(hash);
+        if (target) {
+           e.preventDefault(); 
+           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+</script>

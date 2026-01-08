@@ -1,0 +1,114 @@
+---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Import lazysizes from node_modules
+import 'lazysizes/lazysizes.min.js';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  canonicalURL?: string;
+}
+
+const { 
+  title, 
+  description = "ProPose Alu",
+  image = "/images/domhenrique-cover.jpg",
+  type = "website",
+  canonicalURL = Astro.site 
+    ? new URL(Astro.url.pathname, Astro.site).href
+    : Astro.url.href
+} = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "description": "Restaurante típico situado na Vila de Joane, Cozinha Regional",
+  "url": "http://localhost:4321",
+  "telephone": ["+351 252 996 426", "+351 919 438 502"],
+  "openingHours": "Tu-Sa 12:00-15:00, Tu-Sa 19:00-22:00",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua São Bento 309-B",
+    "addressLocality": "Joane (Vila Nova de Famalicão)",
+    "postalCode": "4770-222",
+    "addressCountry": "PT"
+  }
+};
+---
+
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title} | Cozinha Tradicional</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:locale" content="pt_PT" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/images/domhenrique-cover.jpg" as="image" />
+    <link rel="preconnect" href="https://stackblitz.com" />
+    
+    <!-- Alternative languages -->
+    <link rel="alternate" hreflang="pt" href="http://localhost:4321" />
+    
+    <!-- PWA meta tags -->
+    <meta name="theme-color" content="#8AB77B" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Additional SEO meta tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Propose Alu" />
+    <meta name="keywords" content="fenêtre,portail,menuiserie,pergola,porte,volet,garde-corps,escalier,serrurerie,carport,aluminium,métal,acier,PVC,bois,charpente,maison,installation,pose,fabrication,menuiserie aluminium,serrurerie sur mesure,pose de menuiserie,portails aluminium,fenêtres aluminium,charpente métallique,maison modulaire,garde-corps aluminium,pergolas sur mesure,escaliers métalliques,fenêtres aluminium haute performance,menuiserie aluminium à rupture de pont thermique,pose de fenêtres PVC sur mesure,menuiserie bois et aluminium,menuiserie mixte haute isolation,fenêtres coulissantes cor vision,volets roulants aluminium bioclimatiques,menuiserie acier design,portes d'entrée aluminium sécurisées,installation menuiserie aluminium France,garde-corps aluminium design,fabrication escaliers métalliques sur mesure,motorisation V2 pour portails,pose de garde-corps en verre et aluminium,escaliers en colimaçon métalliques,claustras aluminium extérieur,carports aluminium pour particuliers,carports pour véhicules professionnels,structures métalliques résidentielles,portillons aluminium coordonnés,charpente métallique pour hangar,structure métallique bâtiment industriel,ingénierie charpente métallique,construction légère en acier,charpente métallique sur-mesure,bureau d'études charpente métallique,conception charpente métallique,fabrication structure acier,normes charpente métallique,installation charpente acier,maison modulaire à toit plat,maison préfabriquée en aluminium,construction modulaire rapide,maison FrameA sur mesure,construction modulaire économie d'énergie,maison modulaire aluminium et acier,installation maison préfabriquée France,maison modulaire design personnalisable,construction rapide maison modulaire,solution habitation modulaire clé en main,menuiserie aluminium Bordeaux,pose de fenêtres Rochefort,serrurerie métallique Lacanau,charpente métallique Arcachon,installation menuiserie Nouvelle-Aquitaine,pose de pergolas Sud-Ouest,menuisier aluminium Parempuyre,installation portail aluminium Gironde,menuiserie PVC Aquitaine,constructeur maison modulaire France,menuiserie haut de gamme livraison rapide,fabrication aluminium européenne,menuiserie sur mesure certification NF,installation clé en main menuiserie,portails aluminium premium prix abordable,bureau d'études indépendant menuiserie,menuiserie aluminium garantie 10 ans,pose professionnelle menuiseries aluminium,devis personnalisé menuiserie aluminium " />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      // Initialize lazysizes
+      document.addEventListener('lazybeforeunveil', function(e) {
+        var bg = e.target.getAttribute('data-bg');
+        if (bg) {
+          e.target.style.backgroundImage = 'url(' + bg + ')';
+        }
+      });
+    </script>
+  </body>
+</html>
