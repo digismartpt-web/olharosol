@@ -33,7 +33,12 @@ const schema = {
   "description": restaurantConfig.description,
   "url": "http://localhost:4321",
   "telephone": [restaurantConfig.contact.phone],
-  "openingHours": `Tu-Sa ${restaurantConfig.hours.lunch.replace(' - ', '-')}, Tu-Sa ${restaurantConfig.hours.dinner.replace(' - ', '-')}`,
+  "openingHours": [
+    "We-Th 11:00-15:00", 
+    "We-Th 18:00-23:00", 
+    "Fr-Sa 11:00-00:00", 
+    "Su 18:00-23:00"
+  ],
   "address": {
     "@type": "PostalAddress",
     "streetAddress": restaurantConfig.address.street,

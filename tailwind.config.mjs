@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#b91c1c', // Rouge Brique
-        secondary: '#991b1b', // Rouge Sombre
-        bordeaux: '#7f1d1d',  // Rouge Bordeaux Moyen (Juste Milieu)
-        accent: '#fff7ed', // Crème / Beige
+        primary: '#000000', // Black
+        secondary: '#1a1a1a', // Off-black
+        gold: '#D4AF37', // Classic Gold
+        accent: '#C5A028', // Darker Gold
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif']

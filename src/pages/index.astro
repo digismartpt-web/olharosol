@@ -6,26 +6,10 @@ import Reservation from '../components/Reservation.astro';
 // Images : Sélection précise
 const images = {
   hero: restaurantConfig.images.hero,
-  menu: {
-    entradas: "/images/1.jpg",
-    carnes: "/images/2.jpg",
-    peixe: "/images/3.jpg",
-    sobremesa: "/images/4.jpg",
-  },
-  gallery: [
-    { url: "/images/1.jpg", category: "Pratos" },
-    { url: restaurantConfig.images.hero, category: "Espaço" },
-    { url: "/images/2.jpg", category: "Pratos" },
-    { url: "/images/restaurante1.jpg", category: "Espaço" },
-    { url: "/images/3.jpg", category: "Pratos" },
-    { url: "/images/restaurante2.jpg", category: "Espaço" },
-    { url: "/images/4.jpg", category: "Pratos" },
-    { url: "/images/restaurante3.jpg", category: "Espaço" },
-    { url: "/images/5.jpg", category: "Pratos" },
-    { url: "/images/6.jpg", category: "Pratos" },
-    { url: "/images/7.jpg", category: "Pratos" },
-    { url: "/images/8.jpg", category: "Pratos" },
-  ]
+  gallery: restaurantConfig.images.gallery.map(img => ({
+    url: img.src,
+    category: img.src.includes("restaurante") ? "Espaço" : "Pratos"
+  }))
 };
 ---
 
@@ -35,17 +19,17 @@ const images = {
     <img 
       src={images.hero} 
       alt={restaurantConfig.name} 
-      class="w-full h-full object-cover"
+      class="w-full h-full object-cover object-center"
     />
     <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
       <div class="text-center text-white px-4">
-        <span class="block text-xl md:text-2xl font-light mb-4 tracking-widest uppercase">{restaurantConfig.tagline}</span>
+        <span class="block text-xl md:text-2xl font-light mb-4 tracking-widest uppercase">{restaurantConfig.tagline} • Pratos do Dia ao Almoço</span>
         <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 font-serif">{restaurantConfig.name}</h1>
         <p class="text-lg md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto">
           {restaurantConfig.heroText}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#reservas" class="inline-block bg-primary hover:bg-secondary text-white text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
+          <a href="#reservas" class="inline-block bg-gold hover:bg-accent text-white text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
             Reservar Mesa
           </a>
           <a href="#ementa" class="inline-block bg-white text-gray-900 hover:bg-gray-100 text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
@@ -68,9 +52,8 @@ const images = {
       </div>
 
       <div class="mt-12 flex flex-wrap justify-center gap-4">
-        <span class="px-6 py-3 bg-white rounded-full text-primary font-semibold shadow-md">🅿️ Parque Privativo</span>
-        <span class="px-6 py-3 bg-white rounded-full text-primary font-semibold shadow-md">📍 Localização Privilegiada</span>
-        <span class="px-6 py-3 bg-white rounded-full text-primary font-semibold shadow-md">👨‍🍳 Equipa Profissional</span>
+        <span class="px-6 py-3 bg-white rounded-full text-gold font-semibold shadow-md">📍 Localização Privilegiada</span>
+        <span class="px-6 py-3 bg-white rounded-full text-gold font-semibold shadow-md">👨‍🍳 Equipa Profissional</span>
       </div>
     </div>
   </section>
@@ -80,36 +63,47 @@ const images = {
     <div class="container mx-auto px-4">
       <div class="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
         <div class="relative h-96 rounded-2xl overflow-hidden shadow-xl group">
-             <img 
-              src="/images/restaurante3.jpg" 
-              alt={restaurantConfig.name} 
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+             <video 
+              src="/images/gallery/video.mp4" 
+              class="w-full h-full object-cover"
+              autoplay
+              loop
+              muted
+              playsinline
+            ></video>
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div class="absolute bottom-0 left-0 p-8 text-white">
-                <h3 class="text-2xl font-bold mb-2">Eventos & Negócios</h3>
-                <p>O espaço ideal para a sua empresa</p>
+                <h3 class="text-2xl font-bold mb-2">Takeaway & Delivery</h3>
+                <p>A sua pizza quente em casa</p>
             </div>
         </div>
         <div>
-            <h3 class="text-3xl font-bold mb-6 text-gray-900">Eventos Memoráveis</h3>
-            <p class="text-lg text-gray-700 mb-6">
-                Dispomos de recursos técnicos e humanos para acolher qualquer tipo de evento:
-            </p>
-            <ul class="space-y-4">
-                <li class="flex items-center gap-3 text-gray-700">
-                    <div class="w-2 h-2 rounded-full bg-primary"></div>
-                    Reuniões empresariais
-                </li>
-                <li class="flex items-center gap-3 text-gray-700">
-                    <div class="w-2 h-2 rounded-full bg-primary"></div>
-                    Almoços ou jantares de negócios
-                </li>
-                <li class="flex items-center gap-3 text-gray-700">
-                    <div class="w-2 h-2 rounded-full bg-primary"></div>
-                    Eventos particulares
-                </li>
-            </ul>
+            <h3 class="text-3xl font-bold mb-6 text-gray-900">Takeaway & Entrega</h3>
+            <div class="space-y-6 text-lg text-gray-700">
+                <p>
+                    Saboreie as nossas pizzas artesanais onde e quando quiser.
+                </p>
+                <p>
+                    Encomende por telefone e desfrute da conveniência que melhor se adapta a si.
+                </p>
+                
+                <p class="font-bold text-gray-900 text-xl">
+                    Encomendas: <a href={`tel:${restaurantConfig.contact.phone.replace(/\s/g, '')}`} class="text-gold hover:underline">{restaurantConfig.contact.phone}</a>
+                </p>
+
+                <ul class="space-y-2 pl-4 border-l-2 border-gold/20">
+                    <li class="flex items-center gap-3">
+                         Levantamento no local
+                    </li>
+                    <li class="flex items-center gap-3">
+                         Entrega ao domicílio <span class="text-sm text-gray-500 italic">(consultar zona de cobertura)</span>
+                    </li>
+                </ul>
+
+                <p class="font-medium text-gray-900 italic pt-2">
+                    A qualidade e o sabor autêntico do Olhar o Sol, agora também em sua casa.
+                </p>
+            </div>
         </div>
       </div>
     </div>
@@ -119,110 +113,225 @@ const images = {
   <section id="ementa" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <span class="text-primary font-bold tracking-widest uppercase">Cozinha Regional</span>
+        <span class="text-gold font-bold tracking-widest uppercase">{restaurantConfig.tagline}</span>
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2 mb-4">A Nossa Ementa</h2>
-        <p class="text-gray-600">O melhor da gastronomia do Minho</p>
+        <p class="text-gray-600">O melhor sabor em Riba d'Ave</p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Sopas & Entradas -->
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-          <h3 class="text-xl font-bold mb-4 text-primary">Sopas & Início</h3>
-          <ul class="space-y-3 text-gray-600 text-sm">
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Sopa de Legumes</span>
-              <span class="font-bold text-gray-900">2,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Dose Batata Brava</span>
-              <span class="font-bold text-gray-900">5,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Dose de Castanhas</span>
-              <span class="font-bold text-gray-900">3,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Pão e Azeitonas</span>
-              <span class="font-bold text-gray-900">2,50€</span>
-            </li>
+      <!-- Top Row: 3 Columns -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-8">
+        <!-- Col 1: Sandes & Menu Infantil -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
+          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Sandes & Menu Infantil</h3>
+          
+          <div class="mb-4">
+             <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Sandes</h4>
+             <ul class="space-y-3">
+              {[
+                { name: "Picanha" },
+                { name: "Bifana em Pão", desc: "Queijo, fiambre, maionese, bifana e manteiga de alho" },
+                { name: "Prego em Pão", desc: "Queijo, fiambre e bife" },
+                { name: "Prego em Pão Especial", desc: "Queijo, fiambre, bife, ovo frito, alface e tomate" },
+                { name: "Hambúrguer Olhar o Sol", desc: "Queijo, fiambre, carne, ovo frito, alface, tomate e molho" },
+                { name: "Cachorro em Pão" },
+                { name: "Francesinha em Pão" }
+              ].map(item => (
+                <li class="border-b border-gray-50 pb-2">
+                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
+                  {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Menu Infantil</h4>
+            <ul class="space-y-3">
+              {[
+                { name: "Mista Especial" },
+                { name: "Mini Prego Prato", desc: "Bife, ovo e Batata Frita" },
+                { name: "Nuggets ou Salsicha", desc: "C/ Arroz e Batata Frita" }
+              ].map(item => (
+                <li class="border-b border-gray-50 pb-2">
+                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
+                  {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Col 2: Pizzas (Part 1) -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
+          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Nossas Pizzas</h3>
+          <div class="flex justify-end text-[8px] font-bold text-gray-400 mb-2 uppercase tracking-widest px-1">
+            <span class="w-8 text-center">Peq</span>
+            <span class="w-8 text-center">Méd</span>
+            <span class="w-8 text-center">Gr</span>
+          </div>
+          <ul class="space-y-3">
+            {[
+              { name: "Itália", desc: "Molho, queijo, rúcula, tomate cherry, queijo fresco e azeite" },
+              { name: "Veneza", desc: "Molho, queijo, rúcula, tomate cherry, ananás, presunto e azeite" },
+              { name: "Pepperoni", desc: "Molho, queijo e pepperoni" },
+              { name: "4 Queijos", desc: "" },
+              { name: "Bolonhesa", desc: "Molho, queijo, carne picada, bacon, cogumelos, cebola, pimento e azeitonas" },
+              { name: "Nova Pizza", desc: "Molho, queijo, fiambre e salsicha" },
+              { name: "Original Enrolada", desc: "Molho, queijo, fiambre e ovo frito" },
+              { name: "Do Chefe", desc: "Molho, queijo, frango e milho" },
+              { name: "Napolitana", desc: "Molho, queijo, fiambre, orégãos e azeitonas" },
+              { name: "Olhar o Sol", desc: "Molho, queijo, fiambre, bacon, chourição, pimento e azeitonas" },
+              { name: "Olhar o Sol Especial", desc: "Molho, queijo, bacon, chourição, salame, cogumelos, pimento e cebola roxa" }
+            ].map(item => (
+              <li class="border-b border-gray-50 pb-2">
+                <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
+                {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
+              </li>
+            ))}
           </ul>
         </div>
 
-        <!-- Peixe -->
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-          <h3 class="text-xl font-bold mb-4 text-primary">Peixe</h3>
-          <ul class="space-y-3 text-gray-600 text-sm">
-            <li class="flex justify-between border-b border-gray-50 pb-2 italic text-primary font-medium">
-              <span>Bacalhau Especial</span>
-              <span class="font-bold text-gray-900">27,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Robalo Fresco Grelhado</span>
-              <span class="font-bold text-gray-900">12,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Dourada Fresca Grelhada</span>
-              <span class="font-bold text-gray-900">16,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Filetes de Pescada</span>
-              <span class="font-bold text-gray-900">9,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Bacalhau frito (Escabeche)</span>
-              <span class="font-bold text-gray-900">8,00€</span>
-            </li>
+        <!-- Col 3: Pizzas (Part 2) -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
+          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Nossas Pizzas</h3>
+          <div class="flex justify-end text-[8px] font-bold text-gray-400 mb-2 uppercase tracking-widest px-1">
+            <span class="w-8 text-center">Peq</span>
+            <span class="w-8 text-center">Méd</span>
+            <span class="w-8 text-center">Gr</span>
+          </div>
+          <ul class="space-y-3">
+            {[
+              { name: "Champignon", desc: "Molho, queijo, fiambre, cogumelos, orégãos e azeitonas" },
+              { name: "Minhota", desc: "Molho, queijo, fiambre, bacon e ovo cozido" },
+              { name: "Quatro Estações", desc: "Molho, queijo, presunto, marisco, cogumelos, pimento e azeitonas" },
+              { name: "Atum", desc: "Molho, queijo, atum, ovo, cebola e azeitonas" },
+              { name: "Vegetariana", desc: "Molho, queijo, cogumelos, milho, tomate cherry, pimento, azeitonas e orgãos" },
+              { name: "Alho", desc: "Manteiga de alho, queijo e bacon" },
+              { name: "Kebab", desc: "Molho, queijo, carne kebab, cebola frita e molhos" },
+              { name: "Kebab Especial", desc: "Molho, queijo, carne kebab, cebola roxa, pimento e molhos" },
+              { name: "Alheira", desc: "Molho, queijo, alheira e ovo frito" },
+              { name: "Frutos do Mar", desc: "Molho, queijo, frutos do mar e azeitonas", price: "10,00€" }
+            ].map(item => (
+              <li class="border-b border-gray-50 pb-2">
+                <div class="flex justify-between items-start">
+                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
+                  {item.price && <span class="font-bold text-gold text-[10px]">{item.price}</span>}
+                </div>
+                {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
+              </li>
+            ))}
           </ul>
         </div>
+      </div>
 
-        <!-- Carnes -->
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-          <h3 class="text-xl font-bold mb-4 text-primary">Carnes</h3>
-          <ul class="space-y-3 text-gray-600 text-sm">
-            <li class="flex justify-between border-b border-gray-50 pb-2 font-medium">
-              <span>Rojões à Minhota</span>
-              <span class="font-bold text-gray-900">12,50€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Posta de Boi (+Batata Brava)</span>
-              <span class="font-bold text-gray-900">25,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>T-Bone (+Batata Brava)</span>
-              <span class="font-bold text-gray-900">27,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Costela Mendinha Assada</span>
-              <span class="font-bold text-gray-900">22,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Pernil Inteiro Assado</span>
-              <span class="font-bold text-gray-900">22,00€</span>
-            </li>
-          </ul>
+      <!-- Bottom Row: 2 Columns centered -->
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <!-- Col 4: Sugestões, Saladas, Entradas & Massas -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
+          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Sugestões, Saladas & Massas</h3>
+          
+          <div class="mb-4">
+             <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Sugestões</h4>
+             <li class="text-[11px] font-bold text-gray-900 uppercase list-none flex justify-between">
+               <span>Tábua Olhar o Sol</span>
+               <div class="flex gap-2 text-[9px] text-gray-500">
+                  <span>MÉDIA</span>
+                  <span>GRANDE</span>
+               </div>
+             </li>
+          </div>
+          
+          <div class="mb-4 pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Saladas</h4>
+            <ul class="space-y-2">
+              {[
+                { name: "Atum", desc: "Alface, tomate, atum, ovo, cenoura, cebola e azeitonas" },
+                { name: "Olhar o Sol", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, delícias do mar e azeitonas" },
+                { name: "Olhar o Sol Especial", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, frango, milho e azeitonas" },
+                { name: "Kebab", desc: "Alface, cebola roxa, tomate, carne e milho" }
+              ].map(item => (
+                <li class="border-b border-gray-50 pb-1.5 last:border-0">
+                  <span class="font-bold text-gray-900 uppercase text-[11px] block">{item.name}</span>
+                  <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>
+                </li>
+              ))}
+               <li class="text-[10px] font-bold text-gold uppercase mt-2">Ingrediente Extra Massa Fria - 1,00€</li>
+            </ul>
+          </div>
+
+          <div class="mb-4 pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Entradas</h4>
+            <ul class="grid grid-cols-2 gap-2 text-[10px] font-bold text-gray-700">
+              <li>Sopa</li>
+              <li>Pão c/ Alho</li>
+              <li>Pão c/ Alho e Queijo</li>
+              <li>Pão c/ Alho, Queijo e Bacon</li>
+              <li>Pão c/ Alho, Queijo e Kebab</li>
+              <li>Tostas c/ Paté</li>
+              <li>Chouriça Assada</li>
+            </ul>
+          </div>
+
+          <div class="pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Massas</h4>
+            <ul class="grid grid-cols-2 gap-2">
+              {[ "Massa de Gambas", "Esparguete de Marisco", "Esparguete à Bolonhesa", "Lasanha" ].map(name => (
+                <li class="text-[11px] font-bold text-gray-900 uppercase italic">{name}</li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <!-- Variados & Vegetariano -->
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-          <h3 class="text-xl font-bold mb-4 text-primary">Variados</h3>
-          <ul class="space-y-3 text-gray-600 text-sm">
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Risotto Cogumelos Frescos</span>
-              <span class="font-bold text-gray-900">15,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Risotto Tomate e Espargos</span>
-              <span class="font-bold text-gray-900">15,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2">
-              <span>Bifinhos Peru Grelhados</span>
-              <span class="font-bold text-gray-900">9,00€</span>
-            </li>
-            <li class="flex justify-between border-b border-gray-50 pb-2 italic">
-              <span>Pratos disponíveis p/ levar</span>
-              <span class="text-xs">Takeaway</span>
-            </li>
-          </ul>
+        <!-- Col 5: Cachorros, Francesinhas & Pratos -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
+          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Cachorros, Francesinhas & Pratos</h3>
+          
+          <div class="mb-4">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Cachorros</h4>
+            <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
+              {[
+                "Cachorro Olhar o Sol", "Cachorro Especial"
+              ].map(name => (
+                <li class="text-[11px] font-bold text-gray-900 uppercase leading-tight">{name}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="mb-4 pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Francesinhas</h4>
+             <ul class="space-y-2">
+              {[
+                { name: "Francesinha Olhar o Sol", desc: "Bife, fêvera, hambúrguer ou bife perú" },
+                { name: "Francesinha Especial", desc: "Bife, fêvera, hambúrguer ou bife perú" },
+                { name: "Francesinha Kebab" },
+                { name: "Francesinha Cogumelos" },
+                { name: "Francesinha Gambas" }
+              ].map(item => (
+                <li class="border-b border-gray-50 pb-1.5 last:border-0">
+                  <span class="font-bold text-gray-900 text-[11px] uppercase block leading-none">{item.name}</span>
+                  {item.desc && <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pt-2 border-t border-gray-50">
+            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Pratos Combinados</h4>
+            <ul class="space-y-2">
+              {[
+                { name: "Prego Prato", desc: "Bife de vaca, perú ou fêvera" },
+                { name: "Prego Olhar o Sol" },
+                { name: "Bifinhos c/ Cogumelos" },
+                { name: "Kebab Prato" },
+                { name: "Hambúrguer em Prato Especial", desc: "Hambúrguer de vaca ou frango" }
+              ].map(item => (
+                <li class="border-b border-gray-50 pb-1.5 last:border-0">
+                  <span class="font-bold text-gray-900 text-[11px] uppercase block leading-none">{item.name}</span>
+                  {item.desc && <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -261,11 +370,11 @@ const images = {
 
       <!-- Gallery Pagination -->
       <div class="flex justify-center items-center gap-4 mt-12" id="gallery-pagination">
-        <button id="gallery-prev" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-primary hover:text-primary transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+        <button id="gallery-prev" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-gold hover:text-gold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
         </button>
         <div id="gallery-page-indicator" class="text-sm font-medium text-gray-500">Página 1 de 2</div>
-        <button id="gallery-next" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-primary hover:text-primary transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+        <button id="gallery-next" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-gold hover:text-gold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
@@ -280,13 +389,13 @@ const images = {
     <div class="container mx-auto px-4">
       <div class="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
         <div>
-          <span class="text-primary uppercase tracking-wider text-sm font-semibold">Contactos</span>
+          <span class="text-gold uppercase tracking-wider text-sm font-semibold">Contactos</span>
           <h2 class="text-3xl font-bold mb-8 text-gray-900">Esperamos por si</h2>
           
           <div class="space-y-8 text-lg">
             <!-- Tél -->
             <div class="flex items-start gap-4">
-              <div class="bg-gray-100 p-3 rounded-lg text-primary">
+              <div class="bg-gray-100 p-3 rounded-lg text-gold">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
               </div>
               <div>
@@ -335,13 +444,28 @@ const images = {
 
             <!-- Hours -->
             <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
-              <h3 class="font-bold mb-2 flex items-center gap-2 text-gray-800">
-                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Horário ({restaurantConfig.hours.days})
+              <h3 class="font-bold mb-4 flex items-center gap-2 text-gray-800">
+                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Horário de Funcionamento
               </h3>
-              <p class="text-gray-700">Almoço: {restaurantConfig.hours.lunch}</p>
-              <p class="text-gray-700">Jantar: {restaurantConfig.hours.dinner}</p>
-              <p class="text-red-600 font-semibold mt-2">{restaurantConfig.hours.closed}</p>
+              <div class="space-y-2 text-sm">
+                <p class="flex justify-between border-b border-gray-200 pb-1">
+                  <span class="font-semibold text-gray-600">Segunda e Terça</span>
+                  <span class="font-bold text-gold">{restaurantConfig.hours.segunda_terca}</span>
+                </p>
+                <p class="flex justify-between border-b border-gray-200 pb-1">
+                  <span class="font-semibold text-gray-600">Quarta e Quinta</span>
+                  <span class="text-gray-800">{restaurantConfig.hours.quarta_quinta}</span>
+                </p>
+                <p class="flex justify-between border-b border-gray-200 pb-1">
+                  <span class="font-semibold text-gray-600">Sexta e Sábado</span>
+                  <span class="text-gray-800">{restaurantConfig.hours.sexta_sabado}</span>
+                </p>
+                <p class="flex justify-between">
+                  <span class="font-semibold text-gray-600">Domingo</span>
+                  <span class="text-gray-800">{restaurantConfig.hours.domingo}</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -413,11 +537,11 @@ const images = {
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       filterButtons.forEach(b => {
-        b.classList.remove('bg-primary', 'text-white');
+        b.classList.remove('bg-gold', 'text-white');
         b.classList.add('bg-white', 'text-gray-600');
       });
       btn.classList.remove('bg-white', 'text-gray-600');
-      btn.classList.add('bg-primary', 'text-white');
+      btn.classList.add('bg-gold', 'text-white');
 
       currentFilter = (btn as HTMLElement).dataset.filter;
       currentPage = 1;
