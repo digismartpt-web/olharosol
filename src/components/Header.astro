@@ -1,4 +1,6 @@
 ---
+import { restaurantConfig } from '../data/config.js';
+
 const menuItems = [
   { href: '/#home', text: 'Início' },
   { href: '/#ementa', text: 'Ementa' },
@@ -14,8 +16,8 @@ const menuItems = [
       <a href="/#home" class="flex items-center h-full relative group">
         <!-- Logo Image -->
         <img 
-          src="/images/logo.png" 
-          alt="Dom Henrique Logo" 
+          src={restaurantConfig.images.logo} 
+          alt={`${restaurantConfig.name} Logo`} 
           class="h-10 w-auto object-contain hover:opacity-80 transition-opacity" 
         />
       </a>

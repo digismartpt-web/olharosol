@@ -8,6 +8,8 @@ import Footer from '../components/Footer.astro';
 // Import lazysizes from node_modules
 import 'lazysizes/lazysizes.min.js';
 
+import { restaurantConfig } from '../data/config.js';
+
 interface Props {
   title: string;
   description?: string;
@@ -18,24 +20,25 @@ interface Props {
 
 const { 
   title, 
-  description = "Restaurante Dom Henrique em Joane - Cozinha Regional e Tradicional Portuguesa. O melhor sabor do Minho.",
-  image = "/images/domhenrique-cover.jpg",
+  description = restaurantConfig.description,
+  image = restaurantConfig.images.cover,
   type = "website",
-  canonicalURL = "https://domhenrique.newappai.com"
+  canonicalURL = "https://votre-site.com"
 } = Astro.props;
 
 const schema = {
   "@context": "https://schema.org",
   "@type": "Restaurant",
-  "description": "Restaurante típico situado na Vila de Joane, Cozinha Regional",
+  "name": restaurantConfig.name,
+  "description": restaurantConfig.description,
   "url": "http://localhost:4321",
-  "telephone": ["+351 252 996 426", "+351 919 438 502"],
-  "openingHours": "Tu-Sa 12:00-15:00, Tu-Sa 19:00-22:00",
+  "telephone": [restaurantConfig.contact.phone],
+  "openingHours": `Tu-Sa ${restaurantConfig.hours.lunch.replace(' - ', '-')}, Tu-Sa ${restaurantConfig.hours.dinner.replace(' - ', '-')}`,
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Rua São Bento 309-B",
-    "addressLocality": "Joane (Vila Nova de Famalicão)",
-    "postalCode": "4770-222",
+    "streetAddress": restaurantConfig.address.street,
+    "addressLocality": restaurantConfig.address.city,
+    "postalCode": restaurantConfig.address.postalCode,
     "addressCountry": "PT"
   }
 };
@@ -50,7 +53,7 @@ const schema = {
     <meta name="generator" content={Astro.generator} />
     
     <!-- Primary Meta Tags -->
-    <title>{title} | Cozinha Tradicional</title>
+    <title>{title} | {restaurantConfig.tagline}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     
@@ -76,7 +79,7 @@ const schema = {
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     
     <!-- Preload critical assets -->
-    <link rel="preload" href="/images/domhenrique-cover.jpg" as="image" />
+    <link rel="preload" href={restaurantConfig.images.cover} as="image" />
     <link rel="preconnect" href="https://stackblitz.com" />
     
     <!-- Alternative languages -->
@@ -90,8 +93,8 @@ const schema = {
     
     <!-- Additional SEO meta tags -->
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="Restaurante Dom Henrique" />
-    <meta name="keywords" content="restaurante, cozinha regional, gastronomia portuguesa, Minho, Joane, Vila Nova de Famalicão, comida típica, reserva de mesa, eventos, restaurante tradicional" />
+    <meta name="author" content={restaurantConfig.seo.author} />
+    <meta name="keywords" content={restaurantConfig.seo.keywords} />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />

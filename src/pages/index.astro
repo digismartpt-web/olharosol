@@ -1,10 +1,11 @@
 ---
+import { restaurantConfig } from '../data/config.js';
 import Layout from '../layouts/Layout.astro';
 import Reservation from '../components/Reservation.astro';
 
-// Images : Sélection précise pour correspondre au menu "Minho"
+// Images : Sélection précise
 const images = {
-  hero: "/images/restaurante.jpg",
+  hero: restaurantConfig.images.hero,
   menu: {
     entradas: "/images/1.jpg",
     carnes: "/images/2.jpg",
@@ -13,7 +14,7 @@ const images = {
   },
   gallery: [
     { url: "/images/1.jpg", category: "Pratos" },
-    { url: "/images/restaurante.jpg", category: "Espaço" },
+    { url: restaurantConfig.images.hero, category: "Espaço" },
     { url: "/images/2.jpg", category: "Pratos" },
     { url: "/images/restaurante1.jpg", category: "Espaço" },
     { url: "/images/3.jpg", category: "Pratos" },
@@ -28,20 +29,20 @@ const images = {
 };
 ---
 
-<Layout title="Restaurante Dom Henrique - Joane | Cozinha Regional">
+<Layout title={`${restaurantConfig.name} - ${restaurantConfig.address.city} | ${restaurantConfig.tagline}`}>
   <!-- Hero Section -->
   <section id="home" class="relative h-[80vh] overflow-hidden">
     <img 
       src={images.hero} 
-      alt="Restaurante Dom Henrique Joane" 
+      alt={restaurantConfig.name} 
       class="w-full h-full object-cover"
     />
     <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
       <div class="text-center text-white px-4">
-        <span class="block text-xl md:text-2xl font-light mb-4 tracking-widest uppercase">Casa Típica</span>
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 font-serif">Dom Henrique</h1>
+        <span class="block text-xl md:text-2xl font-light mb-4 tracking-widest uppercase">{restaurantConfig.tagline}</span>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 font-serif">{restaurantConfig.name}</h1>
         <p class="text-lg md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto">
-          Cozinha Regional
+          {restaurantConfig.heroText}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="#reservas" class="inline-block bg-primary hover:bg-secondary text-white text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
@@ -55,25 +56,15 @@ const images = {
     </div>
   </section>
 
-  <!-- Sobre Nós (Texte Fourni) -->
+  <!-- Sobre Nós -->
   <section class="py-20 bg-white border-t border-gray-100">
     <div class="container mx-auto px-4 max-w-4xl text-center">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8">Sobre o Dom Henrique</h2>
+      <h2 class="text-3xl font-bold text-gray-900 mb-8">{restaurantConfig.aboutTitle}</h2>
       
       <div class="space-y-6 text-lg text-gray-700 leading-relaxed">
-        <p>
-          O <strong>Dom Henrique</strong>, situado na Vila de Joane em pleno baixo Minho, 
-          é um Restaurante típico com uma localização privilegiada.
-        </p>
-        <p>
-          Encontra-se a cerca de 50 metros da estrada Nacional Guimarães/Famalicão e da VIM. 
-          Conta com excelentes infra-estruturas, boas acessibilidades, e ainda parque de estacionamento privativo.
-        </p>
-        <p>
-          A qualidade dos nossos serviços é assegurada por uma equipa de profissionais 
-          com formação superior em gestão hoteleira e produção alimentar, 
-          tornando os eventos sempre únicos e memoráveis.
-        </p>
+        {restaurantConfig.aboutText.map(para => (
+          <p>{para}</p>
+        ))}
       </div>
 
       <div class="mt-12 flex flex-wrap justify-center gap-4">
@@ -91,7 +82,7 @@ const images = {
         <div class="relative h-96 rounded-2xl overflow-hidden shadow-xl group">
              <img 
               src="/images/restaurante3.jpg" 
-              alt="Espaço Dom Henrique" 
+              alt={restaurantConfig.name} 
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -162,7 +153,7 @@ const images = {
           <h3 class="text-xl font-bold mb-4 text-primary">Peixe</h3>
           <ul class="space-y-3 text-gray-600 text-sm">
             <li class="flex justify-between border-b border-gray-50 pb-2 italic text-primary font-medium">
-              <span>Bacalhau à D. Henrique</span>
+              <span>Bacalhau Especial</span>
               <span class="font-bold text-gray-900">27,00€</span>
             </li>
             <li class="flex justify-between border-b border-gray-50 pb-2">
@@ -261,7 +252,7 @@ const images = {
           <div class="relative overflow-hidden rounded-2xl shadow-lg aspect-[4/3] gallery-item" data-category={img.category}>
             <img 
               src={img.url} 
-              alt="Galeria Dom Henrique Joane" 
+              alt={`Galeria ${restaurantConfig.name}`} 
               class="w-full h-full object-cover"
             />
           </div>
@@ -300,7 +291,7 @@ const images = {
               </div>
               <div>
                 <h3 class="font-bold mb-1 text-gray-900">Telefone</h3>
-                <p class="text-gray-600">252 996 426</p>
+                <p class="text-gray-600">{restaurantConfig.contact.phone}</p>
               </div>
             </div>
 
@@ -312,14 +303,14 @@ const images = {
               <div>
                 <h3 class="font-bold mb-1 text-gray-900">Localização</h3>
                 <a 
-                  href="https://www.google.com/maps/dir/?api=1&destination=Restaurante+Dom+Henrique+Joane" 
+                  href={restaurantConfig.address.googleMapsLink} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   class="group block hover:text-primary transition-colors"
                   title="Abrir no Google Maps"
                 >
-                  <p class="text-gray-600">Rua São Bento 309-B</p>
-                  <p class="text-gray-600">4770-222 Joane</p>
+                  <p class="text-gray-600">{restaurantConfig.address.street}</p>
+                  <p class="text-gray-600">{restaurantConfig.address.postalCode} {restaurantConfig.address.city}</p>
                   <p class="text-primary text-[10px] font-bold mt-1 uppercase flex items-center gap-1 group-hover:underline">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Ver no Mapa / Direções
@@ -336,8 +327,8 @@ const images = {
               <div>
                 <h3 class="font-bold mb-1 text-gray-900">Siga-nos</h3>
                 <div class="flex gap-4">
-                  <a href="https://www.facebook.com/domhenrique86/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Facebook</a>
-                  <a href="https://www.instagram.com/dom_henrique_restaurante/?hl=fr" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Instagram</a>
+                  <a href={restaurantConfig.contact.facebook} target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Facebook</a>
+                  <a href={restaurantConfig.contact.instagram} target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Instagram</a>
                 </div>
               </div>
             </div>
@@ -346,25 +337,25 @@ const images = {
             <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
               <h3 class="font-bold mb-2 flex items-center gap-2 text-gray-800">
                 <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Horário (Terça a Sábado)
+                Horário ({restaurantConfig.hours.days})
               </h3>
-              <p class="text-gray-700">Almoço: 12h às 15h</p>
-              <p class="text-gray-700">Jantar: 19h às 22h</p>
-              <p class="text-red-600 font-semibold mt-2">Folga ao Domingo e Segunda</p>
+              <p class="text-gray-700">Almoço: {restaurantConfig.hours.lunch}</p>
+              <p class="text-gray-700">Jantar: {restaurantConfig.hours.dinner}</p>
+              <p class="text-red-600 font-semibold mt-2">{restaurantConfig.hours.closed}</p>
             </div>
           </div>
         </div>
         
         <div class="h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-gray-100">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000.0!2d-8.42!3d41.44!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd24f7698844b0a1%3A0xf5199197670cb6dc!2sDom%20Henrique!5e0!3m2!1spt-PT!2spt!4v1711234567890!5m2!1spt-PT!2spt" 
+            src={restaurantConfig.address.embedLink} 
             width="100%" 
             height="100%" 
             style="border:0;" 
             allowfullscreen="" 
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            title="Localização Restaurante Dom Henrique Joane">
+            title={`Localização ${restaurantConfig.name}`}>
           </iframe>
         </div>
       </div>

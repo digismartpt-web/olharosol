@@ -1,8 +1,9 @@
 ---
+import { restaurantConfig } from '../data/config.js';
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Admin - Dom Henrique">
+<Layout title={`Admin - ${restaurantConfig.name}`}>
   <div class="min-h-screen bg-gray-100 pt-24 pb-12">
     <div class="container mx-auto px-4">
       
