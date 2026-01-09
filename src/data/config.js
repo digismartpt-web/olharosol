@@ -36,7 +36,7 @@ export const restaurantConfig = {
   images: {
     logo: "/images/gallery/logo.jpg",
     hero: "/images/gallery/16.jpg",
-    cover: "/images/gallery/salle.jpg",
+    cover: "/images/gallery/restaurante.jpg",
     gallery: [
       { src: "/images/gallery/1.jpg", alt: "Prato de Peixe" },
       { src: "/images/gallery/restaurante.jpg", alt: "Nossa Sala Principal" },
