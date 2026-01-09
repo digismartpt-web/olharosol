@@ -13,7 +13,10 @@ const images = {
 };
 ---
 
-<Layout title={`${restaurantConfig.name} - ${restaurantConfig.address.city} | ${restaurantConfig.tagline}`}>
+<Layout 
+  title={`${restaurantConfig.name} - ${restaurantConfig.address.city} | ${restaurantConfig.tagline}`}
+  heroImage={images.hero}
+>
   <!-- Hero Section -->
   <section id="home" class="relative h-[80vh] overflow-hidden">
     <img 
