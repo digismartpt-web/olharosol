@@ -5,36 +5,38 @@ const menuItems = [
   { href: '/#ementa', text: 'Ementa' },
   { href: '/#reservas', text: 'Reservas' },
   { href: '/#contactos', text: 'Contactos' },
+  { href: '/#takeaway', text: 'Takeaway' }, 
 ];
 ---
 
-<!-- White Static Header - Lilia Style -->
-<header id="main-header" class="bg-white w-full z-50">
-  <div class="container mx-auto px-6 md:px-8">
-    <nav class="flex items-center justify-between h-20 md:h-24">
+<!-- Lilia Style Header -->
+<!-- We use 'fixed' to ensure it stays on top. -->
+<header id="main-header" class="fixed top-0 w-full bg-white z-50 transition-all duration-300 border-b border-transparent">
+  <div id="header-container" class="container mx-auto px-6 md:px-8 transition-all duration-300">
+    <nav id="nav-container" class="flex flex-col items-center justify-center transition-all duration-300 pt-6 pb-2 md:pt-10 md:pb-4">
       
-      <!-- Logo / Name with PIZZERIA -->
-      <a href="/#home" class="flex flex-col">
-        <span class="font-serif text-xl md:text-2xl tracking-wider text-neutral-900">{restaurantConfig.name}</span>
-        <span class="text-[10px] md:text-xs tracking-[0.3em] uppercase text-neutral-500">Pizzeria</span>
+      <!-- Logo / Name -->
+      <a href="/#home" id="logo-link" class="flex flex-col items-center text-center group transition-all duration-300 mb-4 md:mb-6">
+        <span id="logo-text" class="font-serif text-3xl md:text-5xl tracking-wider text-neutral-900 transition-all duration-300">{restaurantConfig.name}</span>
+        <span id="logo-sub" class="text-xs md:text-sm tracking-[0.3em] uppercase text-neutral-500 mt-2 transition-all duration-300">Pizzeria</span>
       </a>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center space-x-10">
+      <div id="desktop-menu" class="hidden md:flex items-center space-x-12 opacity-100 transition-all duration-300">
         {menuItems.map(item => (
           <a
             href={item.href}
-            class="text-sm uppercase tracking-[0.2em] text-neutral-600 hover:text-gold transition-colors duration-300"
+            class="text-xs md:text-sm uppercase tracking-[0.2em] text-neutral-600 hover:text-gold transition-colors duration-300"
           >
             {item.text}
           </a>
         ))}
       </div>
 
-      <!-- Mobile Menu Button -->
+      <!-- Mobile Menu Button (Absolute positioned to stay accessible) -->
       <button 
         id="mobile-menu-button"
-        class="md:hidden p-2 text-neutral-900"
+        class="md:hidden absolute right-6 top-6 p-2 text-neutral-900"
         aria-label="Menu"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,6 +46,9 @@ const menuItems = [
     </nav>
   </div>
 </header>
+
+<!-- Spacer to prevent content from hiding behind fixed header initially -->
+<div class="h-[140px] md:h-[200px]"></div>
 
 <!-- Mobile Menu Full Screen Overlay -->
 <div id="mobile-menu" class="fixed inset-0 bg-neutral-900 z-50 hidden opacity-0 transition-opacity duration-300">
@@ -84,12 +89,60 @@ const menuItems = [
   </div>
 </div>
 
+<style>
+  /* Scrolled State Overrides */
+  header.scrolled {
+    @apply shadow-sm py-0;
+  }
+  
+  header.scrolled #nav-container {
+    @apply flex-row justify-between py-4;
+  }
+
+  header.scrolled #logo-link {
+    @apply mb-0 text-left items-start;
+  }
+
+  header.scrolled #logo-text {
+    @apply text-xl md:text-2xl;
+  }
+
+  header.scrolled #logo-sub {
+    @apply mt-0 text-[10px]; /* Keep visible */
+  }
+
+  header.scrolled #desktop-menu {
+    @apply space-x-8;
+  }
+  
+  /* Mobile Button adjustments for scrolled state if needed */
+  header.scrolled #mobile-menu-button {
+    @apply top-4;
+  }
+</style>
+
 <script>
+  const header = document.getElementById('main-header');
+  const scrollThreshold = 50;
+
+  function updateHeader() {
+    if (window.scrollY > scrollThreshold) {
+      header?.classList.add('scrolled');
+    } else {
+      header?.classList.remove('scrolled');
+    }
+  }
+
+  window.addEventListener('scroll', updateHeader);
+  // Initial check
+  updateHeader();
+
+  // Preserved Mobile Menu Scripts
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const closeMenuButton = document.getElementById('close-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  // Mobile menu
+  // Mobile menu functions
   function openMenu() {
     if (mobileMenu) {
       mobileMenu.classList.remove('hidden');
@@ -113,12 +166,10 @@ const menuItems = [
   mobileMenuButton?.addEventListener('click', openMenu);
   closeMenuButton?.addEventListener('click', closeMenu);
   
-  // Close menu when clicking on a link
   mobileMenu?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMenu);
   });
 
-  // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="/#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
