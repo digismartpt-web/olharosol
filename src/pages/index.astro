@@ -3,578 +3,831 @@ import { restaurantConfig } from '../data/config.js';
 import Layout from '../layouts/Layout.astro';
 import Reservation from '../components/Reservation.astro';
 
-// Images : Sélection précise
-const images = {
-  hero: restaurantConfig.images.hero,
-  gallery: restaurantConfig.images.gallery.map(img => ({
-    url: img.src,
-    category: img.src.includes("restaurante") ? "Espaço" : "Pratos"
-  }))
+// Images de la galerie pour le design Lilia-style
+const galleryImages = [
+  '/images/gallery/1.jpg',
+  '/images/gallery/2.jpg',
+  '/images/gallery/3.jpg',
+  '/images/gallery/4.jpg',
+  '/images/gallery/5.jpg',
+  '/images/gallery/6.jpg',
+  '/images/gallery/7.jpg',
+  '/images/gallery/8.jpg',
+  '/images/gallery/9.jpg',
+  '/images/gallery/10.jpg',
+  '/images/gallery/11.jpg',
+  '/images/gallery/12.jpg',
+  '/images/gallery/13.jpg',
+  '/images/gallery/14.jpg',
+  '/images/gallery/15.jpg',
+];
+
+const restaurantImages = [
+  '/images/gallery/restaurante.jpg',
+  '/images/gallery/restaurante1.jpg',
+  '/images/gallery/restaurante2.jpg',
+  '/images/gallery/restaurante3.jpg',
+];
+
+// Menu complet du restaurant
+const menuData = {
+  sandes: [
+    { name: "Picanha" },
+    { name: "Bifana em pão", desc: "Queijo, fiambre, maionese, bifana e manteiga de alho" },
+    { name: "Prego em pão", desc: "Queijo, fiambre e bife" },
+    { name: "Prego em pão especial", desc: "Queijo, fiambre, bife, ovo frito, alface e tomate" },
+    { name: "Hambúrguer Olhar o Sol", desc: "Queijo, fiambre, carne, ovo frito, alface, tomate e molho" },
+    { name: "Cachorro em pão" },
+    { name: "Francesinha em pão" }
+  ],
+  menuInfantil: [
+    { name: "Mista especial" },
+    { name: "Mini prego prato", desc: "Bife, ovo e batata frita" },
+    { name: "Nuggets ou salsicha", desc: "C/ arroz e batata frita" }
+  ],
+  pizzas1: [
+    { name: "Itália", desc: "Molho, queijo, rúcula, tomate cherry, queijo fresco e azeite" },
+    { name: "Veneza", desc: "Molho, queijo, rúcula, tomate cherry, ananás, presunto e azeite" },
+    { name: "Pepperoni", desc: "Molho, queijo e pepperoni" },
+    { name: "4 queijos" },
+    { name: "Bolonhesa", desc: "Molho, queijo, carne picada, bacon, cogumelos, cebola, pimento e azeitonas" },
+    { name: "Nova pizza", desc: "Molho, queijo, fiambre e salsicha" },
+    { name: "Original enrolada", desc: "Molho, queijo, fiambre e ovo frito" },
+    { name: "Do chefe", desc: "Molho, queijo, frango e milho" },
+    { name: "Napolitana", desc: "Molho, queijo, fiambre, orégãos e azeitonas" },
+    { name: "Olhar o Sol", desc: "Molho, queijo, fiambre, bacon, chourição, pimento e azeitonas" },
+    { name: "Olhar o Sol especial", desc: "Molho, queijo, bacon, chourição, salame, cogumelos, pimento e cebola roxa" }
+  ],
+  pizzas2: [
+    { name: "Champignon", desc: "Molho, queijo, fiambre, cogumelos, orégãos e azeitonas" },
+    { name: "Minhota", desc: "Molho, queijo, fiambre, bacon e ovo cozido" },
+    { name: "Quatro estações", desc: "Molho, queijo, presunto, marisco, cogumelos, pimento e azeitonas" },
+    { name: "Atum", desc: "Molho, queijo, atum, ovo, cebola e azeitonas" },
+    { name: "Vegetariana", desc: "Molho, queijo, cogumelos, milho, tomate cherry, pimento, azeitonas e orégãos" },
+    { name: "Alho", desc: "Manteiga de alho, queijo e bacon" },
+    { name: "Kebab", desc: "Molho, queijo, carne kebab, cebola frita e molhos" },
+    { name: "Kebab especial", desc: "Molho, queijo, carne kebab, cebola roxa, pimento e molhos" },
+    { name: "Alheira", desc: "Molho, queijo, alheira e ovo frito" },
+    { name: "Frutos do mar", desc: "Molho, queijo, frutos do mar e azeitonas" }
+  ],
+  saladas: [
+    { name: "Atum", desc: "Alface, tomate, atum, ovo, cenoura, cebola e azeitonas" },
+    { name: "Olhar o Sol", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, delícias do mar e azeitonas" },
+    { name: "Olhar o Sol especial", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, frango, milho e azeitonas" },
+    { name: "Kebab", desc: "Alface, cebola roxa, tomate, carne e milho" }
+  ],
+  entradas: ["Sopa", "Pão c/ alho", "Pão c/ alho e queijo", "Pão c/ alho, queijo e bacon", "Pão c/ alho, queijo e kebab", "Tostas c/ paté", "Chouriça assada"],
+  massas: ["Massa de gambas", "Esparguete de marisco", "Esparguete à bolonhesa", "Lasanha"],
+  cachorros: ["Cachorro Olhar o Sol", "Cachorro especial"],
+  francesinhas: [
+    { name: "Francesinha Olhar o Sol", desc: "Bife, fêvera, hambúrguer ou bife perú" },
+    { name: "Francesinha especial", desc: "Bife, fêvera, hambúrguer ou bife perú" },
+    { name: "Francesinha kebab" },
+    { name: "Francesinha cogumelos" },
+    { name: "Francesinha gambas" }
+  ],
+  pratos: [
+    { name: "Prego Prato", desc: "Bife de vaca, perú ou fêvera" },
+    { name: "Prego Olhar o Sol" },
+    { name: "Bifinhos c/ Cogumelos" },
+    { name: "Kebab Prato" },
+    { name: "Hambúrguer em Prato Especial", desc: "Hambúrguer de vaca ou frango" }
+  ]
 };
 ---
 
+
 <Layout 
-  title={`${restaurantConfig.name} - ${restaurantConfig.address.city} | ${restaurantConfig.tagline}`}
-  heroImage={images.hero}
+  title={`${restaurantConfig.name} - ${restaurantConfig.address.city}`}
+  heroImage={restaurantConfig.images.hero}
 >
-  <!-- Hero Section -->
-  <section id="home" class="relative h-[80vh] overflow-hidden">
-    <img 
-      src={images.hero} 
-      alt={restaurantConfig.name} 
-      class="w-full h-full object-cover object-center"
-      loading="eager"
-      fetchpriority="high"
-    />
-    <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
-      <div class="text-center text-white px-4">
-        <span class="block text-xl md:text-2xl font-light mb-4 tracking-widest uppercase">{restaurantConfig.tagline} • Pratos do Dia ao Almoço</span>
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 font-serif">{restaurantConfig.name}</h1>
-        <p class="text-lg md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto">
-          {restaurantConfig.heroText}
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#reservas" class="inline-block bg-gold hover:bg-accent text-white text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
-            Reservar Mesa
-          </a>
-          <a href="#ementa" class="inline-block bg-white text-gray-900 hover:bg-gray-100 text-lg font-semibold px-8 py-4 rounded-full transition-transform hover:scale-105 shadow-lg">
-            Ver Ementa
-          </a>
+  <!-- Hero Section - Slider Like Lilia (hauteur réduite) -->
+  <section id="home" class="relative h-[70vh] w-full overflow-hidden">
+    <!-- Slider Background -->
+    <div class="hero-slider absolute inset-0">
+      <div class="hero-slider-track" id="heroSliderTrack">
+        <div class="hero-slide active">
+          <img src="/images/gallery/restaurante.jpg" alt="Restaurante" />
+        </div>
+        <div class="hero-slide">
+          <img src="/images/gallery/6.jpg" alt="Prato" />
+        </div>
+        <div class="hero-slide">
+          <img src="/images/gallery/10.jpg" alt="Prato" />
         </div>
       </div>
     </div>
+    
+    <!-- Overlay très léger -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    
+    <!-- Indicateurs de slide style Lilia - en bas au centre -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3">
+      <button class="slide-dot w-2 h-2 rounded-full bg-white/80 transition-all" data-slide="0"></button>
+      <button class="slide-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/60 transition-all" data-slide="1"></button>
+      <button class="slide-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/60 transition-all" data-slide="2"></button>
+    </div>
   </section>
 
-  <!-- Sobre Nós -->
-  <section class="py-20 bg-white border-t border-gray-100">
-    <div class="container mx-auto px-4 max-w-4xl text-center">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8">{restaurantConfig.aboutTitle}</h2>
+  <style>
+    .hero-slider {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    
+    .hero-slider-track {
+      display: flex;
+      height: 100%;
+      width: 300%;
+      transition: transform 0.6s ease-in-out;
+    }
+    
+    .hero-slide {
+      flex-shrink: 0;
+      width: 100vw;
+      height: 100%;
+    }
+    
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const track = document.getElementById('heroSliderTrack');
+      const slides = track.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.slide-dot');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
       
-      <div class="space-y-6 text-lg text-gray-700 leading-relaxed">
-        {restaurantConfig.aboutText.map(para => (
-          <p>{para}</p>
-        ))}
-      </div>
+      function updateDots() {
+        dots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.remove('bg-white/40');
+            dot.classList.add('bg-white/80');
+          } else {
+            dot.classList.remove('bg-white/80');
+            dot.classList.add('bg-white/40');
+          }
+        });
+      }
+      
+      function goToSlide(index) {
+        currentSlide = index;
+        track.style.transform = `translateX(-${currentSlide * 100}vw)`;
+        updateDots();
+      }
+      
+      function nextSlide() {
+        if (currentSlide >= totalSlides - 1) {
+          track.style.transition = 'none';
+          currentSlide = 0;
+          track.style.transform = `translateX(0)`;
+          track.offsetHeight;
+          track.style.transition = 'transform 0.6s ease-in-out';
+          updateDots();
+        } else {
+          currentSlide++;
+          goToSlide(currentSlide);
+        }
+      }
+      
+      // Navigation par dots
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          goToSlide(index);
+        });
+      });
+      
+      // Slider automatique - 4 secondes par image
+      setInterval(nextSlide, 4000);
+    });
+  </script>
 
-      <div class="mt-12 flex flex-wrap justify-center gap-4">
-        <span class="px-6 py-3 bg-white rounded-full text-gold font-semibold shadow-md">📍 Localização Privilegiada</span>
-        <span class="px-6 py-3 bg-white rounded-full text-gold font-semibold shadow-md">👨‍🍳 Equipa Profissional</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Infraestruturas & Eventos -->
-  <section class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-        <div class="relative h-96 rounded-2xl overflow-hidden shadow-xl group">
-             <video 
-              src="/images/gallery/video.mp4" 
-              class="w-full h-full object-cover"
-              autoplay
-              loop
-              muted
-              playsinline
-            ></video>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-8 text-white">
-                <h3 class="text-2xl font-bold mb-2">Takeaway & Delivery</h3>
-                <p>A sua pizza quente em casa</p>
-            </div>
+  <!-- About Section - Minimal with large typography -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="container mx-auto px-8 max-w-5xl">
+      <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+        <div class="reveal">
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-light text-gray-900 leading-tight">
+            {restaurantConfig.aboutTitle}
+          </h2>
         </div>
-        <div>
-            <h3 class="text-3xl font-bold mb-6 text-gray-900">Takeaway & Entrega</h3>
-            <div class="space-y-6 text-lg text-gray-700">
-                <p>
-                    Saboreie as nossas pizzas artesanais onde e quando quiser.
-                </p>
-                <p>
-                    Encomende por telefone e desfrute da conveniência que melhor se adapta a si.
-                </p>
-                
-                <p class="font-bold text-gray-900 text-xl">
-                    Encomendas: <a href={`tel:${restaurantConfig.contact.phone.replace(/\s/g, '')}`} class="text-gold hover:underline">{restaurantConfig.contact.phone}</a>
-                </p>
-
-                <ul class="space-y-2 pl-4 border-l-2 border-gold/20">
-                    <li class="flex items-center gap-3">
-                         Levantamento no local
-                    </li>
-                    <li class="flex items-center gap-3">
-                         Entrega ao domicílio <span class="text-sm text-gray-500 italic">(consultar zona de cobertura)</span>
-                    </li>
-                </ul>
-
-                <p class="font-medium text-gray-900 italic pt-2">
-                    A qualidade e o sabor autêntico do Olhar o Sol, agora também em sua casa.
-                </p>
-            </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Nossa Ementa -->
-  <section id="ementa" class="py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16">
-        <span class="text-gold font-bold tracking-widest uppercase">{restaurantConfig.tagline}</span>
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2 mb-4">A Nossa Ementa</h2>
-        <p class="text-gray-600">O melhor sabor em Riba d'Ave</p>
-      </div>
-
-      <!-- Top Row: 3 Columns -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-8">
-        <!-- Col 1: Sandes & Menu Infantil -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
-          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Sandes & Menu Infantil</h3>
-          
-          <div class="mb-4">
-             <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Sandes</h4>
-             <ul class="space-y-3">
-              {[
-                { name: "Picanha" },
-                { name: "Bifana em Pão", desc: "Queijo, fiambre, maionese, bifana e manteiga de alho" },
-                { name: "Prego em Pão", desc: "Queijo, fiambre e bife" },
-                { name: "Prego em Pão Especial", desc: "Queijo, fiambre, bife, ovo frito, alface e tomate" },
-                { name: "Hambúrguer Olhar o Sol", desc: "Queijo, fiambre, carne, ovo frito, alface, tomate e molho" },
-                { name: "Cachorro em Pão" },
-                { name: "Francesinha em Pão" }
-              ].map(item => (
-                <li class="border-b border-gray-50 pb-2">
-                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
-                  {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div class="pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Menu Infantil</h4>
-            <ul class="space-y-3">
-              {[
-                { name: "Mista Especial" },
-                { name: "Mini Prego Prato", desc: "Bife, ovo e Batata Frita" },
-                { name: "Nuggets ou Salsicha", desc: "C/ Arroz e Batata Frita" }
-              ].map(item => (
-                <li class="border-b border-gray-50 pb-2">
-                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
-                  {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <!-- Col 2: Pizzas (Part 1) -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
-          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Nossas Pizzas</h3>
-          <div class="flex justify-end text-[8px] font-bold text-gray-400 mb-2 uppercase tracking-widest px-1">
-            <span class="w-8 text-center">Peq</span>
-            <span class="w-8 text-center">Méd</span>
-            <span class="w-8 text-center">Gr</span>
-          </div>
-          <ul class="space-y-3">
-            {[
-              { name: "Itália", desc: "Molho, queijo, rúcula, tomate cherry, queijo fresco e azeite" },
-              { name: "Veneza", desc: "Molho, queijo, rúcula, tomate cherry, ananás, presunto e azeite" },
-              { name: "Pepperoni", desc: "Molho, queijo e pepperoni" },
-              { name: "4 Queijos", desc: "" },
-              { name: "Bolonhesa", desc: "Molho, queijo, carne picada, bacon, cogumelos, cebola, pimento e azeitonas" },
-              { name: "Nova Pizza", desc: "Molho, queijo, fiambre e salsicha" },
-              { name: "Original Enrolada", desc: "Molho, queijo, fiambre e ovo frito" },
-              { name: "Do Chefe", desc: "Molho, queijo, frango e milho" },
-              { name: "Napolitana", desc: "Molho, queijo, fiambre, orégãos e azeitonas" },
-              { name: "Olhar o Sol", desc: "Molho, queijo, fiambre, bacon, chourição, pimento e azeitonas" },
-              { name: "Olhar o Sol Especial", desc: "Molho, queijo, bacon, chourição, salame, cogumelos, pimento e cebola roxa" }
-            ].map(item => (
-              <li class="border-b border-gray-50 pb-2">
-                <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
-                {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
-              </li>
+        <div class="reveal">
+          <div class="space-y-6 text-lg text-gray-600 leading-relaxed">
+            {restaurantConfig.aboutText.map(para => (
+              <p>{para}</p>
             ))}
-          </ul>
-        </div>
-
-        <!-- Col 3: Pizzas (Part 2) -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
-          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Nossas Pizzas</h3>
-          <div class="flex justify-end text-[8px] font-bold text-gray-400 mb-2 uppercase tracking-widest px-1">
-            <span class="w-8 text-center">Peq</span>
-            <span class="w-8 text-center">Méd</span>
-            <span class="w-8 text-center">Gr</span>
           </div>
-          <ul class="space-y-3">
-            {[
-              { name: "Champignon", desc: "Molho, queijo, fiambre, cogumelos, orégãos e azeitonas" },
-              { name: "Minhota", desc: "Molho, queijo, fiambre, bacon e ovo cozido" },
-              { name: "Quatro Estações", desc: "Molho, queijo, presunto, marisco, cogumelos, pimento e azeitonas" },
-              { name: "Atum", desc: "Molho, queijo, atum, ovo, cebola e azeitonas" },
-              { name: "Vegetariana", desc: "Molho, queijo, cogumelos, milho, tomate cherry, pimento, azeitonas e orgãos" },
-              { name: "Alho", desc: "Manteiga de alho, queijo e bacon" },
-              { name: "Kebab", desc: "Molho, queijo, carne kebab, cebola frita e molhos" },
-              { name: "Kebab Especial", desc: "Molho, queijo, carne kebab, cebola roxa, pimento e molhos" },
-              { name: "Alheira", desc: "Molho, queijo, alheira e ovo frito" },
-              { name: "Frutos do Mar", desc: "Molho, queijo, frutos do mar e azeitonas", price: "10,00€" }
-            ].map(item => (
-              <li class="border-b border-gray-50 pb-2">
-                <div class="flex justify-between items-start">
-                  <span class="font-bold text-gray-900 uppercase text-[11px] tracking-wide block">{item.name}</span>
-                  {item.price && <span class="font-bold text-gold text-[10px]">{item.price}</span>}
-                </div>
-                {item.desc && <p class="text-gray-500 text-[10px] mt-0.5 leading-tight">{item.desc}</p>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <!-- Bottom Row: 2 Columns centered -->
-      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-        <!-- Col 4: Sugestões, Saladas, Entradas & Massas -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
-          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Sugestões, Saladas & Massas</h3>
-          
-          <div class="mb-4">
-             <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Sugestões</h4>
-             <li class="text-[11px] font-bold text-gray-900 uppercase list-none flex justify-between">
-               <span>Tábua Olhar o Sol</span>
-               <div class="flex gap-2 text-[9px] text-gray-500">
-                  <span>MÉDIA</span>
-                  <span>GRANDE</span>
-               </div>
-             </li>
-          </div>
-          
-          <div class="mb-4 pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Saladas</h4>
-            <ul class="space-y-2">
-              {[
-                { name: "Atum", desc: "Alface, tomate, atum, ovo, cenoura, cebola e azeitonas" },
-                { name: "Olhar o Sol", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, delícias do mar e azeitonas" },
-                { name: "Olhar o Sol Especial", desc: "Alface, tomate, queijo, fiambre, ovo, cenoura, frango, milho e azeitonas" },
-                { name: "Kebab", desc: "Alface, cebola roxa, tomate, carne e milho" }
-              ].map(item => (
-                <li class="border-b border-gray-50 pb-1.5 last:border-0">
-                  <span class="font-bold text-gray-900 uppercase text-[11px] block">{item.name}</span>
-                  <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>
-                </li>
-              ))}
-               <li class="text-[10px] font-bold text-gold uppercase mt-2">Ingrediente Extra Massa Fria - 1,00€</li>
-            </ul>
-          </div>
-
-          <div class="mb-4 pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Entradas</h4>
-            <ul class="grid grid-cols-2 gap-2 text-[10px] font-bold text-gray-700">
-              <li>Sopa</li>
-              <li>Pão c/ Alho</li>
-              <li>Pão c/ Alho e Queijo</li>
-              <li>Pão c/ Alho, Queijo e Bacon</li>
-              <li>Pão c/ Alho, Queijo e Kebab</li>
-              <li>Tostas c/ Paté</li>
-              <li>Chouriça Assada</li>
-            </ul>
-          </div>
-
-          <div class="pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Massas</h4>
-            <ul class="grid grid-cols-2 gap-2">
-              {[ "Massa de Gambas", "Esparguete de Marisco", "Esparguete à Bolonhesa", "Lasanha" ].map(name => (
-                <li class="text-[11px] font-bold text-gray-900 uppercase italic">{name}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <!-- Col 5: Cachorros, Francesinhas & Pratos -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full">
-          <h3 class="text-xl font-bold mb-6 text-gold border-b border-gold/10 pb-2">Cachorros, Francesinhas & Pratos</h3>
-          
-          <div class="mb-4">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Cachorros</h4>
-            <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
-              {[
-                "Cachorro Olhar o Sol", "Cachorro Especial"
-              ].map(name => (
-                <li class="text-[11px] font-bold text-gray-900 uppercase leading-tight">{name}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div class="mb-4 pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Francesinhas</h4>
-             <ul class="space-y-2">
-              {[
-                { name: "Francesinha Olhar o Sol", desc: "Bife, fêvera, hambúrguer ou bife perú" },
-                { name: "Francesinha Especial", desc: "Bife, fêvera, hambúrguer ou bife perú" },
-                { name: "Francesinha Kebab" },
-                { name: "Francesinha Cogumelos" },
-                { name: "Francesinha Gambas" }
-              ].map(item => (
-                <li class="border-b border-gray-50 pb-1.5 last:border-0">
-                  <span class="font-bold text-gray-900 text-[11px] uppercase block leading-none">{item.name}</span>
-                  {item.desc && <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div class="pt-2 border-t border-gray-50">
-            <h4 class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest italic">Pratos Combinados</h4>
-            <ul class="space-y-2">
-              {[
-                { name: "Prego Prato", desc: "Bife de vaca, perú ou fêvera" },
-                { name: "Prego Olhar o Sol" },
-                { name: "Bifinhos c/ Cogumelos" },
-                { name: "Kebab Prato" },
-                { name: "Hambúrguer em Prato Especial", desc: "Hambúrguer de vaca ou frango" }
-              ].map(item => (
-                <li class="border-b border-gray-50 pb-1.5 last:border-0">
-                  <span class="font-bold text-gray-900 text-[11px] uppercase block leading-none">{item.name}</span>
-                  {item.desc && <p class="text-gray-500 text-[9px] italic leading-tight">{item.desc}</p>}
-                </li>
-              ))}
-            </ul>
+          <div class="mt-8 pt-8 border-t border-neutral-200">
+            <p class="text-[10px] sm:text-xs uppercase tracking-wider text-neutral-400 whitespace-nowrap">
+              Localização privilegiada <span class="mx-2">•</span> Equipa profissional
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Galeria de Fotos (Restaurée) -->
-  <section id="galeria" class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4">Galeria de Fotos</h2>
-        <p class="text-gray-600 mb-8">Espaço dedicado aos nossos pratos e ambiente</p>
-        
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-          {['Todos', 'Pratos', 'Espaço'].map((filter, index) => (
-            <button 
-              class={`px-6 py-2 rounded-full transition-all ${index === 0 ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:text-primary border border-gray-200'}`}
-              data-filter={filter}
-            >
-              {filter}
-            </button>
-          ))}
+  <!-- Image Grid Section - Asymmetric Lilia Style -->
+  <section class="py-20 bg-neutral-50">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="grid grid-cols-12 gap-4 md:gap-6">
+        <!-- Large left image -->
+        <div class="col-span-12 md:col-span-7 aspect-[4/5] reveal">
+          <img 
+            src={galleryImages[0]} 
+            alt="Prato" 
+            class="w-full h-full object-cover"
+          />
         </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" id="gallery-grid">
-        {images.gallery.map((img) => (
-          <div class="relative overflow-hidden rounded-2xl shadow-lg aspect-[4/3] gallery-item" data-category={img.category}>
+        <!-- Stacked right images -->
+        <div class="col-span-12 md:col-span-5 flex flex-col gap-4 md:gap-6">
+          <div class="aspect-[4/3] reveal">
             <img 
-              src={img.url} 
-              alt={`Galeria ${restaurantConfig.name}`} 
+              src={galleryImages[1]} 
+              alt="Prato" 
               class="w-full h-full object-cover"
             />
           </div>
-        ))}
+          <div class="aspect-[4/3] reveal">
+            <img 
+              src={restaurantImages[0]} 
+              alt="Restaurante" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Takeaway Section - Elegant -->
+  <section class="py-32 md:py-40 bg-neutral-900 text-white">
+    <div class="container mx-auto px-8 max-w-7xl">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="text-gold uppercase tracking-[0.3em] text-sm font-medium">Takeaway & entrega</span>
+          <h2 class="text-4xl md:text-5xl font-serif font-light mt-4 mb-8">
+            Leve o sabor para casa
+          </h2>
+          <p class="text-lg text-gray-300 leading-relaxed mb-6">
+            Saboreie as nossas pizzas artesanais onde e quando quiser. Encomende por telefone e desfrute da conveniência.
+          </p>
+          <ul class="space-y-3 mb-8 text-gray-300">
+            <li class="flex items-center gap-3">
+              <span class="text-gold">✓</span> Levantamento no local
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-gold">✓</span> Entrega ao domicílio <button id="zonesBtn" class="text-sm text-gray-400 hover:text-gold underline transition-colors focus:outline-none">(consultar zona de cobertura)</button>
+            </li>
+          </ul>
+          <a 
+            href={`tel:${restaurantConfig.contact.phone.replace(/\s/g, '')}`} 
+            class="inline-flex items-center gap-3 text-2xl font-serif text-gold hover:text-white transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            {restaurantConfig.contact.phone}
+          </a>
+          
+          <div class="mt-8">
+            <button class="px-8 py-4 bg-gold text-white font-medium uppercase tracking-[0.2em] text-sm rounded-lg shadow-xl hover:bg-white hover:text-gold transition-all duration-300 transform hover:-translate-y-1 cursor-default">
+              Click & Collect
+            </button>
+          </div>
+        </div>
+        <div class="reveal grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <video 
+            src="/images/gallery/video.mp4" 
+            class="w-full h-full object-cover min-h-[300px] rounded-lg"
+            autoplay
+            loop
+            muted
+            playsinline
+          ></video>
+          
+          <video 
+            src="/images/gallery/video1.mp4" 
+            class="w-full h-full object-cover min-h-[300px] rounded-lg"
+            autoplay
+            loop
+            muted
+            playsinline
+          ></video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zones Lightbox -->
+  <div id="zonesLightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-8 md:p-12 max-w-md w-full relative">
+      <button id="closeZones" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <h3 class="text-2xl font-serif text-gold mb-6 text-center">Zonas de entrega</h3>
+      <ul class="space-y-3 text-gray-300 text-center text-lg">
+        <li>Riba d'Ave</li>
+        <li>Oliveira Santa Maria</li>
+        <li>Delães</li>
+        <li>Joane</li>
+        <li>Castelões</li>
+        <li>Serzedelo</li>
+        <li>Vizela</li>
+      </ul>
+      <p class="mt-8 text-xs text-center text-gray-500 uppercase tracking-widest">Taxas podem aplicar-se</p>
+    </div>
+  </div>
+
+  <!-- Menu Section - Clickable Titles with Lightbox -->
+  <section id="ementa" class="py-32 md:py-40 bg-white">
+    <div class="container mx-auto px-8 max-w-5xl">
+      <div class="text-center mb-20 reveal">
+        <span class="text-gold uppercase tracking-[0.3em] text-sm font-medium">{restaurantConfig.tagline}</span>
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-light text-gray-900 mt-4">
+          A nossa ementa
+        </h2>
+        <p class="mt-4 text-gray-500">Clique numa categoria para ver o menu completo</p>
       </div>
 
-      <!-- Gallery Pagination -->
-      <div class="flex justify-center items-center gap-4 mt-12" id="gallery-pagination">
-        <button id="gallery-prev" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-gold hover:text-gold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      <!-- Menu Categories Grid -->
+      <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto reveal">
+        
+        <!-- Sandes / Menu Infantil -->
+        <button 
+          class="menu-btn group p-8 bg-neutral-50 hover:bg-gold/10 border border-neutral-200 hover:border-gold transition-all duration-300 text-left"
+          data-images="/images/menu-sandes.png"
+          data-title="Sandes / Menu Infantil"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl md:text-3xl font-serif text-gray-900 group-hover:text-gold transition-colors">
+              Sandes / Menu infantil
+            </h3>
+            <svg class="w-6 h-6 text-gray-400 group-hover:text-gold group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">Picanha, bifana, prego, hambúrguer...</p>
         </button>
-        <div id="gallery-page-indicator" class="text-sm font-medium text-gray-500">Página 1 de 2</div>
-        <button id="gallery-next" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-gold hover:text-gold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+
+        <!-- Pizzas -->
+        <button 
+          class="menu-btn group p-8 bg-neutral-50 hover:bg-gold/10 border border-neutral-200 hover:border-gold transition-all duration-300 text-left"
+          data-images="/images/menu-pizzas1.png,/images/menu-pizzas2.png"
+          data-title="Pizzas"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl md:text-3xl font-serif text-gray-900 group-hover:text-gold transition-colors">
+              Pizzas
+            </h3>
+            <svg class="w-6 h-6 text-gray-400 group-hover:text-gold group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">Itália, Veneza, pepperoni, 4 queijos, kebab...</p>
+        </button>
+
+        <!-- Saladas / Entradas / Sugestões -->
+        <button 
+          class="menu-btn group p-8 bg-neutral-50 hover:bg-gold/10 border border-neutral-200 hover:border-gold transition-all duration-300 text-left"
+          data-images="/images/menu-saladas.png"
+          data-title="Saladas / Entradas / Sugestões"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl md:text-3xl font-serif text-gray-900 group-hover:text-gold transition-colors">
+              Saladas / Entradas / Sugestões
+            </h3>
+            <svg class="w-6 h-6 text-gray-400 group-hover:text-gold group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">Saladas, massas, tábua Olhar o Sol...</p>
+        </button>
+
+        <!-- Cachorros / Francesinhas -->
+        <button 
+          class="menu-btn group p-8 bg-neutral-50 hover:bg-gold/10 border border-neutral-200 hover:border-gold transition-all duration-300 text-left"
+          data-images="/images/menu-cachorros.png"
+          data-title="Cachorros / Francesinhas"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl md:text-3xl font-serif text-gray-900 group-hover:text-gold transition-colors">
+              Cachorros / Francesinhas
+            </h3>
+            <svg class="w-6 h-6 text-gray-400 group-hover:text-gold group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">Francesinhas, Cachorros, Pratos Combinados...</p>
         </button>
       </div>
     </div>
   </section>
 
-  <!-- Reservation System (New) -->
+  <!-- Lightbox Modal for Menu Images -->
+  <div id="menuLightbox" class="fixed inset-0 z-50 hidden bg-black/95 overflow-auto">
+    <!-- Close Button -->
+    <button id="closeLightbox" class="fixed top-6 right-6 text-white/80 hover:text-white z-50 p-2">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    
+    <!-- Title -->
+    <div id="lightboxTitle" class="fixed top-6 left-6 text-white text-xl md:text-2xl font-serif z-50"></div>
+    
+    <!-- Images Container - Affiche toutes les images simultanément -->
+    <div id="lightboxContainer" class="flex flex-col md:flex-row items-center justify-center gap-4 p-4 md:p-12 min-h-screen">
+      <!-- Les images seront injectées ici dynamiquement -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu Lightbox & Logic
+      const lightbox = document.getElementById('menuLightbox');
+      const lightboxContainer = document.getElementById('lightboxContainer');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const closeLightbox = document.getElementById('closeLightbox');
+      const menuBtns = document.querySelectorAll('.menu-btn');
+      
+      // Zones Lightbox Logic
+      const zonesBtn = document.getElementById('zonesBtn');
+      const zonesLightbox = document.getElementById('zonesLightbox');
+      const closeZones = document.getElementById('closeZones');
+
+      // Functions for Zones
+      function openZones() {
+        zonesLightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeZonesFn() {
+        zonesLightbox.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      zonesBtn?.addEventListener('click', openZones);
+      closeZones?.addEventListener('click', closeZonesFn);
+      zonesLightbox?.addEventListener('click', (e) => {
+        if (e.target === zonesLightbox) closeZonesFn();
+      });
+      
+      // Functions for Menu Lightbox
+      function openLightbox(images, title) {
+        const imageArray = images.split(',');
+        lightboxTitle.textContent = title;
+        
+        // Vider le container
+        lightboxContainer.innerHTML = '';
+        
+        // Créer et ajouter toutes les images
+        imageArray.forEach((imgSrc, index) => {
+          const img = document.createElement('img');
+          img.src = imgSrc.trim();
+          img.alt = `${title} ${index + 1}`;
+          img.className = imageArray.length > 1 
+            ? 'max-w-full md:max-w-[48%] max-h-[85vh] object-contain' 
+            : 'max-w-full max-h-[85vh] object-contain';
+          lightboxContainer.appendChild(img);
+        });
+        
+        lightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeLightboxFn() {
+        lightbox.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      
+      // Event Listeners
+      menuBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const images = btn.dataset.images;
+          const title = btn.dataset.title;
+          openLightbox(images, title);
+        });
+      });
+      
+      closeLightbox.addEventListener('click', closeLightboxFn);
+      
+      // Close on background click
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target === lightboxContainer) {
+          closeLightboxFn();
+        }
+      });
+      
+      // Keyboard navigation (works for both)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeLightboxFn();
+          closeZonesFn();
+        }
+      });
+    });
+  </script>
+
+  <!-- Parallax Image Break -->
+  <section class="relative h-[60vh] overflow-hidden">
+    <div class="absolute inset-0 parallax-bg" style={`background-image: url('${restaurantImages[1]}')`}></div>
+    <div class="absolute inset-0 bg-black/30"></div>
+  </section>
+
+  <!-- Galerie Photos avec Carrousel -->
+  <section id="galeria" class="py-20 bg-neutral-50">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center mb-12 reveal">
+        <span class="text-gold uppercase tracking-[0.3em] text-sm font-medium">Galeria</span>
+        <h2 class="text-4xl md:text-5xl font-serif font-light text-gray-900 mt-4">Os nossos pratos</h2>
+      </div>
+      
+      <!-- Carrousel -->
+      <div class="relative reveal">
+        <!-- Container du carrousel -->
+        <div class="overflow-hidden">
+          <div id="carousel" class="flex transition-transform duration-500 ease-in-out">
+            {[...galleryImages, ...restaurantImages].map((img, index) => (
+              <div class="carousel-slide flex-shrink-0 w-full md:w-1/3 px-2">
+                <div class="aspect-square">
+                  <img 
+                    src={img} 
+                    alt={`Photo ${index + 1}`} 
+                    class="w-full h-full object-cover rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- Flèche Gauche -->
+        <button 
+          id="prevBtn"
+          class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 z-10 bg-white/90 hover:bg-gold text-gray-900 hover:text-white w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 group"
+          aria-label="Photo précédente"
+        >
+          <svg class="w-6 h-6 md:w-7 md:h-7 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <!-- Flèche Droite -->
+        <button 
+          id="nextBtn"
+          class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 z-10 bg-white/90 hover:bg-gold text-gray-900 hover:text-white w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 group"
+          aria-label="Photo suivante"
+        >
+          <svg class="w-6 h-6 md:w-7 md:h-7 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        
+        <!-- Indicateurs de position -->
+        <div class="flex justify-center mt-6 gap-2" id="indicators">
+          {[...galleryImages, ...restaurantImages].map((_, index) => (
+            <button 
+              class="indicator w-2 h-2 md:w-3 md:h-3 rounded-full bg-gray-300 hover:bg-gold transition-colors duration-300"
+              data-index={index}
+              aria-label={`Aller à la photo ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const carousel = document.getElementById('carousel');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const indicators = document.querySelectorAll('.indicator');
+      const slides = document.querySelectorAll('.carousel-slide');
+      
+      let currentIndex = 0;
+      let slidesPerView = window.innerWidth >= 768 ? 3 : 1;
+      const totalSlides = slides.length;
+      const maxIndex = Math.max(0, totalSlides - slidesPerView);
+      
+      function updateCarousel() {
+        const slideWidth = 100 / slidesPerView;
+        carousel.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+        
+        // Mettre à jour les indicateurs
+        indicators.forEach((ind, i) => {
+          if (i >= currentIndex && i < currentIndex + slidesPerView) {
+            ind.classList.add('bg-gold');
+            ind.classList.remove('bg-gray-300');
+          } else {
+            ind.classList.remove('bg-gold');
+            ind.classList.add('bg-gray-300');
+          }
+        });
+        
+        // Désactiver les boutons aux extrémités
+        prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+        nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+      }
+      
+      function goNext() {
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+          updateCarousel();
+        }
+      }
+      
+      function goPrev() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCarousel();
+        }
+      }
+      
+      prevBtn.addEventListener('click', goPrev);
+      nextBtn.addEventListener('click', goNext);
+      
+      // Clic sur indicateurs
+      indicators.forEach((ind, index) => {
+        ind.addEventListener('click', () => {
+          currentIndex = Math.min(index, maxIndex);
+          updateCarousel();
+        });
+      });
+      
+      // Navigation au clavier
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') goPrev();
+        if (e.key === 'ArrowRight') goNext();
+      });
+      
+      // Swipe sur mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      carousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      
+      carousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) goNext();
+        if (touchEndX - touchStartX > 50) goPrev();
+      });
+      
+      // Responsive
+      window.addEventListener('resize', () => {
+        const newSlidesPerView = window.innerWidth >= 768 ? 3 : 1;
+        if (newSlidesPerView !== slidesPerView) {
+          slidesPerView = newSlidesPerView;
+          currentIndex = Math.min(currentIndex, Math.max(0, totalSlides - slidesPerView));
+          updateCarousel();
+        }
+      });
+      
+      // Auto-play optionnel
+      let autoPlayInterval;
+      function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+          if (currentIndex >= maxIndex) {
+            currentIndex = 0;
+          } else {
+            currentIndex++;
+          }
+          updateCarousel();
+        }, 5000);
+      }
+      
+      function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+      }
+      
+      // Arrêter l'autoplay au survol
+      carousel.parentElement.addEventListener('mouseenter', stopAutoPlay);
+      carousel.parentElement.addEventListener('mouseleave', startAutoPlay);
+      
+      // Initialisation
+      updateCarousel();
+      startAutoPlay();
+    });
+  </script>
+
+  <!-- Reservation Section -->
   <Reservation />
 
-  <!-- Info & Map -->
-  <section id="contactos" class="py-20 bg-white text-gray-900">
-    <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-        <div>
-          <span class="text-gold uppercase tracking-wider text-sm font-semibold">Contactos</span>
-          <h2 class="text-3xl font-bold mb-8 text-gray-900">Esperamos por si</h2>
+  <!-- Hours & Location - Lilia Style -->
+  <section id="contactos" class="py-32 md:py-48 bg-white">
+    <div class="container mx-auto px-8 max-w-5xl">
+      <div class="grid md:grid-cols-2 gap-16 md:gap-24">
+        <!-- Left: Info -->
+        <div class="reveal">
+          <span class="text-gold uppercase tracking-[0.3em] text-sm font-medium">Visite-nos</span>
+          <h2 class="text-4xl md:text-5xl font-serif font-light text-gray-900 mt-4 mb-12">
+            Horário & localização
+          </h2>
           
-          <div class="space-y-8 text-lg">
-            <!-- Tél -->
-            <div class="flex items-start gap-4">
-              <div class="bg-gray-100 p-3 rounded-lg text-gold">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-              </div>
-              <div>
-                <h3 class="font-bold mb-1 text-gray-900">Telefone</h3>
-                <p class="text-gray-600">{restaurantConfig.contact.phone}</p>
+          <div class="space-y-10">
+            <!-- Hours -->
+            <div>
+              <h3 class="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">Horário</h3>
+              <div class="space-y-2 text-lg text-gray-700">
+                <p><span class="text-gray-400">Segunda e terça:</span> <span class="text-gold font-medium">{restaurantConfig.hours.segunda_terca}</span></p>
+                <p><span class="text-gray-400">Quarta e quinta:</span> {restaurantConfig.hours.quarta_quinta}</p>
+                <p><span class="text-gray-400">Sexta e sábado:</span> {restaurantConfig.hours.sexta_sabado}</p>
+                <p><span class="text-gray-400">Domingo:</span> {restaurantConfig.hours.domingo}</p>
               </div>
             </div>
 
             <!-- Address -->
-            <div class="flex items-start gap-4">
-              <div class="bg-gray-100 p-3 rounded-lg text-primary">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-              </div>
-              <div>
-                <h3 class="font-bold mb-1 text-gray-900">Localização</h3>
-                <a 
-                  href={restaurantConfig.address.googleMapsLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="group block hover:text-primary transition-colors"
-                  title="Abrir no Google Maps"
-                >
-                  <p class="text-gray-600">{restaurantConfig.address.street}</p>
-                  <p class="text-gray-600">{restaurantConfig.address.postalCode} {restaurantConfig.address.city}</p>
-                  <p class="text-primary text-[10px] font-bold mt-1 uppercase flex items-center gap-1 group-hover:underline">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Ver no Mapa / Direções
-                  </p>
-                </a>
-              </div>
+            <div>
+              <h3 class="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">Localização</h3>
+              <a 
+                href={restaurantConfig.address.googleMapsLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-lg text-gray-700 hover:text-gold transition-colors block"
+              >
+                {restaurantConfig.address.street}<br />
+                {restaurantConfig.address.postalCode} {restaurantConfig.address.city}
+              </a>
+            </div>
+
+            <!-- Contact -->
+            <div>
+              <h3 class="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">Contacto</h3>
+              <a 
+                href={`tel:${restaurantConfig.contact.phone.replace(/\s/g, '')}`}
+                class="text-lg text-gray-700 hover:text-gold transition-colors"
+              >
+                {restaurantConfig.contact.phone}
+              </a>
             </div>
 
             <!-- Social -->
-            <div class="flex items-start gap-4">
-              <div class="bg-gray-100 p-3 rounded-lg text-primary">
+            <div class="flex gap-6 pt-6">
+              <a href={restaurantConfig.contact.instagram} target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gold transition-colors">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-              </div>
-              <div>
-                <h3 class="font-bold mb-1 text-gray-900">Siga-nos</h3>
-                <div class="flex gap-4">
-                  <a href={restaurantConfig.contact.facebook} target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Facebook</a>
-                  <a href={restaurantConfig.contact.instagram} target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors">Instagram</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Hours -->
-            <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
-              <h3 class="font-bold mb-4 flex items-center gap-2 text-gray-800">
-                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Horário de Funcionamento
-              </h3>
-              <div class="space-y-2 text-sm">
-                <p class="flex justify-between border-b border-gray-200 pb-1">
-                  <span class="font-semibold text-gray-600">Segunda e Terça</span>
-                  <span class="font-bold text-gold">{restaurantConfig.hours.segunda_terca}</span>
-                </p>
-                <p class="flex justify-between border-b border-gray-200 pb-1">
-                  <span class="font-semibold text-gray-600">Quarta e Quinta</span>
-                  <span class="text-gray-800">{restaurantConfig.hours.quarta_quinta}</span>
-                </p>
-                <p class="flex justify-between border-b border-gray-200 pb-1">
-                  <span class="font-semibold text-gray-600">Sexta e Sábado</span>
-                  <span class="text-gray-800">{restaurantConfig.hours.sexta_sabado}</span>
-                </p>
-                <p class="flex justify-between">
-                  <span class="font-semibold text-gray-600">Domingo</span>
-                  <span class="text-gray-800">{restaurantConfig.hours.domingo}</span>
-                </p>
-              </div>
+              </a>
+              <a href={restaurantConfig.contact.facebook} target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gold transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </a>
             </div>
           </div>
         </div>
-        
-        <div class="h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-gray-100">
-          <iframe 
-            src={restaurantConfig.address.embedLink} 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title={`Localização ${restaurantConfig.name}`}>
-          </iframe>
+
+        <!-- Right: Map -->
+        <div class="reveal">
+        <div class="reveal">
+          <a 
+            href={restaurantConfig.address.googleMapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block h-full min-h-[400px] rounded-lg overflow-hidden relative cursor-pointer"
+            aria-label="Abrir no Google Maps"
+          >
+            <iframe 
+              src={restaurantConfig.address.embedLink} 
+              width="100%" 
+              height="100%" 
+              style="border:0; min-height: 500px; pointer-events: none;" 
+              allowfullscreen="" 
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title={`Localização ${restaurantConfig.name}`}>
+            </iframe>
+          </a>
+        </div>
         </div>
       </div>
     </div>
   </section>
 
-
 </Layout>
 
-<script>
-  // Gallery Logic: Filter + Pagination
-  const filterButtons = document.querySelectorAll('[data-filter]');
-  const galleryItems = Array.from(document.querySelectorAll('.gallery-item')) as HTMLElement[];
-  const btnPrev = document.getElementById('gallery-prev') as HTMLButtonElement;
-  const btnNext = document.getElementById('gallery-next') as HTMLButtonElement;
-  const pageIndicator = document.getElementById('gallery-page-indicator');
-  const paginationContainer = document.getElementById('gallery-pagination');
-
-  let currentFilter = 'Todos';
-  let currentPage = 1;
-  const itemsPerPage = 6;
-
-  function updateGallery() {
-    // 1. Filter items
-    const filteredItems = galleryItems.filter(item => 
-      currentFilter === 'Todos' || item.dataset.category === currentFilter
-    );
-
-    // 2. Pagination calc
-    const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
-    if (currentPage > totalPages) currentPage = totalPages;
-
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-
-    // 3. Show/Hide items
-    galleryItems.forEach(item => item.style.display = 'none');
-    filteredItems.forEach((item, index) => {
-      if (index >= start && index < end) {
-        item.style.display = 'block';
-      }
-    });
-
-    // 4. Update UI
-    if (pageIndicator) pageIndicator.textContent = `Página ${currentPage} de ${totalPages}`;
-    if (btnPrev) btnPrev.disabled = currentPage === 1;
-    if (btnNext) btnNext.disabled = currentPage === totalPages;
-
-    // Hide pagination if only 1 page
-    if (paginationContainer) {
-      paginationContainer.style.display = totalPages > 1 ? 'flex' : 'none';
+<style>
+  .parallax-bg {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .parallax-bg {
+      background-attachment: scroll;
     }
   }
-
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterButtons.forEach(b => {
-        b.classList.remove('bg-gold', 'text-white');
-        b.classList.add('bg-white', 'text-gray-600');
-      });
-      btn.classList.remove('bg-white', 'text-gray-600');
-      btn.classList.add('bg-gold', 'text-white');
-
-      currentFilter = (btn as HTMLElement).dataset.filter;
-      currentPage = 1;
-      updateGallery();
-    });
-  });
-
-  btnPrev?.addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      updateGallery();
-      document.getElementById('galeria').scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-
-  btnNext?.addEventListener('click', () => {
-    const filteredCount = galleryItems.filter(item => 
-      currentFilter === 'Todos' || item.dataset.category === currentFilter
-    ).length;
-    const totalPages = Math.ceil(filteredCount / itemsPerPage);
-    
-    if (currentPage < totalPages) {
-      currentPage++;
-      updateGallery();
-      document.getElementById('galeria').scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-
-  // Initial call
-  updateGallery();
-</script>
+</style>

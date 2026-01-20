@@ -10,7 +10,8 @@ export default {
         accent: '#C5A028', // Darker Gold
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif']
       },
       screens: {
         'xs': '475px',

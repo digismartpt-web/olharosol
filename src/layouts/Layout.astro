@@ -2,6 +2,9 @@
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
+import '@fontsource/playfair-display/400.css';
+import '@fontsource/playfair-display/600.css';
+import '@fontsource/playfair-display/700.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
@@ -109,6 +112,11 @@ const schema = {
       <slot />
     </main>
     <Footer />
+    
+    <!-- Developer Badge -->
+    <div class="fixed bottom-0 right-8 z-[100] bg-black text-white px-4 py-2 text-[10px] uppercase tracking-wider font-medium rounded-t-lg shadow-2xl border-t border-x border-white/10 pointer-events-none select-none">
+      Developed for free by Digismart AI
+    </div>
     <script>
       // Initialize lazysizes
       document.addEventListener('lazybeforeunveil', function(e) {
@@ -116,6 +124,59 @@ const schema = {
         if (bg) {
           e.target.style.backgroundImage = 'url(' + bg + ')';
         }
+      });
+    </script>
+    
+    <script>
+      // Lenis Smooth Scroll - Import dynamically for client-side
+      import Lenis from 'lenis';
+      
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+    </script>
+    
+    <script>
+      // GSAP ScrollTrigger Animations
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      
+      gsap.registerPlugin(ScrollTrigger);
+      
+      // Animate all elements with .reveal class
+      document.addEventListener('DOMContentLoaded', () => {
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        revealElements.forEach((el) => {
+          gsap.fromTo(el, 
+            { 
+              y: 50, 
+              autoAlpha: 0 
+            },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+                end: 'bottom 15%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          );
+        });
       });
     </script>
   </body>

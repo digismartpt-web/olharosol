@@ -2,127 +2,107 @@
 import { restaurantConfig } from '../data/config.js';
 
 const menuItems = [
-  { href: '/#home', text: 'Início' },
   { href: '/#ementa', text: 'Ementa' },
-  { href: '/#galeria', text: 'Galeria' },
   { href: '/#reservas', text: 'Reservas' },
   { href: '/#contactos', text: 'Contactos' },
 ];
 ---
 
-<header class="bg-white shadow-md fixed w-full z-50">
-  <div class="container mx-auto px-4">
-    <nav class="flex items-center justify-between h-20">
-      <a href="/#home" class="flex items-center h-full relative group">
-        <!-- Logo Image -->
-        <img 
-          src={restaurantConfig.images.logo} 
-          alt={`${restaurantConfig.name} Logo`} 
-          class="h-14 w-auto object-contain hover:opacity-80 transition-opacity" 
-        />
+<!-- White Static Header - Lilia Style -->
+<header id="main-header" class="bg-white w-full z-50">
+  <div class="container mx-auto px-6 md:px-8">
+    <nav class="flex items-center justify-between h-20 md:h-24">
+      
+      <!-- Logo / Name with PIZZERIA -->
+      <a href="/#home" class="flex flex-col">
+        <span class="font-serif text-xl md:text-2xl tracking-wider text-neutral-900">{restaurantConfig.name}</span>
+        <span class="text-[10px] md:text-xs tracking-[0.3em] uppercase text-neutral-500">Pizzeria</span>
       </a>
 
       <!-- Desktop Menu -->
-      <div class="hidden lg:flex space-x-6 justify-center">
+      <div class="hidden md:flex items-center space-x-10">
         {menuItems.map(item => (
-          <div class="relative group">
-            <a
-              href={item.href}
-              class="text-gray-500 hover:text-gold transition-colors duration-200 flex items-center font-medium"
-            >
-              {item.text}
-            </a>
-          </div>
+          <a
+            href={item.href}
+            class="text-sm uppercase tracking-[0.2em] text-neutral-600 hover:text-gold transition-colors duration-300"
+          >
+            {item.text}
+          </a>
         ))}
       </div>
 
       <!-- Mobile Menu Button -->
       <button 
         id="mobile-menu-button"
-        class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        class="md:hidden p-2 text-neutral-900"
         aria-label="Menu"
       >
-        <svg 
-          class="w-6 h-6 text-gray-600" 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-
-      <!-- Mobile Menu Panel -->
-      <div 
-        id="mobile-menu" 
-        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden"
-        aria-hidden="true"
-      >
-        <div class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-lg transform transition-transform duration-300 translate-x-full">
-          <div class="p-5">
-            <button 
-              id="close-menu-button"
-              class="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Fechar menu"
-            >
-              <svg 
-                class="w-6 h-6 text-gray-600" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <div class="mt-8 space-y-4">
-              {menuItems.map(item => (
-                <div>
-                  <a
-                    href={item.href}
-                    class="block py-3 text-lg text-gray-600 hover:text-gold transition-colors duration-200"
-                  >
-                    {item.text}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </nav>
   </div>
 </header>
+
+<!-- Mobile Menu Full Screen Overlay -->
+<div id="mobile-menu" class="fixed inset-0 bg-neutral-900 z-50 hidden opacity-0 transition-opacity duration-300">
+  <div class="h-full flex flex-col justify-center items-center">
+    <button 
+      id="close-menu-button"
+      class="absolute top-6 right-6 p-2 text-white"
+      aria-label="Fechar menu"
+    >
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <nav class="text-center space-y-8">
+      <a href="/#home" class="block text-3xl font-serif text-white tracking-wider hover:text-gold transition-colors">
+        Início
+      </a>
+      {menuItems.map(item => (
+        <a
+          href={item.href}
+          class="block text-3xl font-serif text-white tracking-wider hover:text-gold transition-colors"
+        >
+          {item.text}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Social Links in Mobile Menu -->
+    <div class="absolute bottom-10 flex gap-8">
+      <a href={restaurantConfig.contact.instagram} target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href={restaurantConfig.contact.facebook} target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
 
 <script>
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const closeMenuButton = document.getElementById('close-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuPanel = mobileMenu?.querySelector('div');
 
+  // Mobile menu
   function openMenu() {
-    if (mobileMenu && mobileMenuPanel) {
+    if (mobileMenu) {
       mobileMenu.classList.remove('hidden');
       setTimeout(() => {
-        mobileMenuPanel.classList.remove('translate-x-full');
+        mobileMenu.classList.remove('opacity-0');
       }, 10);
       document.body.style.overflow = 'hidden';
     }
   }
 
   function closeMenu() {
-    if (mobileMenu && mobileMenuPanel) {
-      mobileMenuPanel.classList.add('translate-x-full');
+    if (mobileMenu) {
+      mobileMenu.classList.add('opacity-0');
       setTimeout(() => {
         mobileMenu.classList.add('hidden');
       }, 300);
@@ -132,49 +112,22 @@ const menuItems = [
 
   mobileMenuButton?.addEventListener('click', openMenu);
   closeMenuButton?.addEventListener('click', closeMenu);
-  mobileMenu?.addEventListener('click', (e) => {
-    if (e.target === mobileMenu) {
-      closeMenu();
-    }
-  });
-
+  
   // Close menu when clicking on a link
   mobileMenu?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMenu);
   });
 
-  // Gestion spéciale pour le lien Accueil
-  document.querySelectorAll('a[href="#home"]').forEach(anchor => {
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="/#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  });
-
-  // Smooth scroll pour les autres liens d'ancrage
-  document.querySelectorAll('a[href^="#"]:not([href="/#home"])').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      // e.preventDefault(); // On laisse le comportement par défaut pour les liens inter-pages si besoin, ou on adapte
-      // Ici on cible des ID sur la page d'accueil
       const href = this.getAttribute('href');
-      // Si c'est juste un hash
-      if (href.startsWith('#')) {
-         e.preventDefault();
-         const target = document.querySelector(href);
-         if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-         }
-      } 
-      // Si c'est /#id et qu'on est sur /
-      else if (href.startsWith('/#')) {
-        const hash = href.substring(1); // #id
+      if (href && href.startsWith('/#')) {
+        const hash = href.substring(1);
         const target = document.querySelector(hash);
         if (target) {
-           e.preventDefault(); 
-           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
     });

@@ -2,159 +2,190 @@
 import { restaurantConfig } from '../data/config.js';
 ---
 
-<section id="reservas" class="py-20 bg-gray-50 text-gray-900 relative">
-  <div class="container mx-auto px-4 relative z-10">
-    <div class="text-center mb-12">
-      <span class="text-gold uppercase tracking-wider text-sm font-semibold">Reservas Online</span>
-      <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 text-gray-900">Reserve a sua Mesa</h2>
+<!-- Reservation Section - Lilia Style -->
+<section id="reservas" class="py-32 md:py-40 bg-neutral-900 text-white relative overflow-hidden">
+  
+  <!-- Decorative Elements -->
+  <div class="absolute top-0 left-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+  
+  <div class="container mx-auto px-8 max-w-5xl relative z-10">
+    
+    <!-- Header -->
+    <div class="text-center mb-16 reveal">
+      <span class="text-gold uppercase tracking-[0.3em] text-sm font-medium">Reservas Online</span>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-light mt-4 mb-4">
+        Reserve a sua mesa
+      </h2>
 
     </div>
 
-    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-      <!-- Info Panel (G) -->
-      <div class="bg-gray-900 p-8 md:w-1/3 text-white flex flex-col justify-between">
-        <div>
-          <h3 class="text-xl font-bold mb-6 text-gold">Informações</h3>
-          <ul class="space-y-4 text-sm text-gray-300">
-            <li class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-gold mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <!-- Main Card -->
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden reveal">
+      <div class="grid md:grid-cols-5">
+        
+        <!-- Info Panel -->
+        <div class="md:col-span-2 bg-neutral-800 p-8 md:p-10 text-white">
+          <h3 class="text-xl font-serif text-gold mb-8">Informações</h3>
+          
+          <div class="space-y-8">
+            <!-- Hours -->
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center text-gold shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
               <div>
-                <strong class="block text-white mb-1">Horário</strong>
-                <div class="space-y-1">
-                  <p><span class="text-gray-400">Seg/Ter:</span> <span class="text-gold font-semibold">{restaurantConfig.hours.segunda_terca}</span></p>
-                  <p><span class="text-gray-400">Qua/Qui:</span> {restaurantConfig.hours.quarta_quinta}</p>
-                  <p><span class="text-gray-400">Sex/Sáb:</span> {restaurantConfig.hours.sexta_sabado}</p>
-                  <p><span class="text-gray-400">Dom:</span> {restaurantConfig.hours.domingo}</p>
+                <h4 class="font-medium text-white mb-2">Horário</h4>
+                <div class="space-y-1 text-sm text-gray-400">
+                  <p><span class="text-gold font-medium">{restaurantConfig.hours.segunda_terca}</span> Seg/Ter</p>
+                  <p>{restaurantConfig.hours.quarta_quinta} Qua/Qui</p>
+                  <p>{restaurantConfig.hours.sexta_sabado} Sex/Sáb</p>
+                  <p>{restaurantConfig.hours.domingo} Dom</p>
                 </div>
               </div>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-primary mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-              <div>
-                <strong class="block text-white">Telefone</strong>
-                {restaurantConfig.contact.phone}
-                <p class="text-[10px] text-gray-400 mt-2 leading-tight">
-                  * Apenas são tolerados 15 minutos de atraso. Após esse período, a reserva será cancelada automaticamente.
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="mt-8 text-xs text-gray-500">
-          * Para grupos > 10 pessoas, por favor contacte-nos por telefone.
-        </div>
-      </div>
-
-      <!-- Form Panel (D) -->
-      <div class="p-8 md:w-2/3 bg-white text-gray-800 relative">
-        <!-- Loading Overlay -->
-        <div id="loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 hidden flex items-center justify-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-        </div>
-
-        <form id="reservation-form" class="space-y-6">
-          <!-- Step 1: Details -->
-          <div class="grid md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Data</label>
-              <input 
-                type="date" 
-                id="res-date"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all"
-              />
-              <p class="text-xs text-red-500 mt-1 hidden" id="date-error">O restaurante encontra-se encerrado. Não é possível efetuar reservas.</p>
             </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Pessoas</label>
-              <select id="res-guests" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
-                {[2, 3, 4, 5, 6, 7, 8].map(n => <option value={n}>{n} Pessoas</option>)}
-              </select>
+
+            <!-- Phone -->
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center text-gold shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-medium text-white mb-2">Telefone</h4>
+                <a href={`tel:${restaurantConfig.contact.phone.replace(/\s/g, '')}`} class="text-gold hover:text-white transition-colors">
+                  {restaurantConfig.contact.phone}
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Step 2: Time Slots (Dynamic) -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Horário</label>
-            <div id="slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-              <!-- Slots injected via JS -->
-              <div class="col-span-4 text-gray-400 text-sm italic p-2 border border-dashed rounded text-center">
-                Selecione uma data para ver disponibilidade
-              </div>
+          <!-- Notes -->
+          <div class="mt-10 pt-6 border-t border-gray-700">
+            <div class="space-y-3 text-xs text-gray-500">
+              <p>* Apenas são tolerados 15 minutos de atraso. Por favor, informe-nos em caso de atraso para encontrarmos a melhor solução.</p>
+              <p>* Para grupos > 10 pessoas, contacte-nos por telefone.</p>
             </div>
-            <input type="hidden" id="res-time" required />
+          </div>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="md:col-span-3 p-8 md:p-10 bg-white text-gray-800 relative">
+          <!-- Loading Overlay -->
+          <div id="loading-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-2 border-gold border-t-transparent"></div>
+            <p class="mt-4 text-gray-500 text-sm">A processar...</p>
           </div>
 
-          <!-- Step 3: Contact Info (Hidden until slot selected) -->
-          <div id="contact-step" class="space-y-4 hidden opacity-0 transition-opacity duration-500">
-            <div class="border-t border-gray-100 pt-6">
-              <h4 class="text-sm uppercase tracking-wide text-gold font-bold mb-4">Seus Dados</h4>
+          <form id="reservation-form" class="space-y-8">
+            <!-- Step 1: Date & Guests -->
+            <div class="grid md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Nome Completo</label>
+                <label class="block text-sm font-medium text-gray-600 mb-2 uppercase tracking-wider">Data</label>
                 <input 
-                  type="text" 
-                  id="res-name"
+                  type="date" 
+                  id="res-date"
                   required
-                  placeholder="Seu nome"
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all"
+                  class="w-full px-4 py-4 rounded-lg border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all text-gray-900 bg-neutral-50"
                 />
+                <p class="text-xs text-red-500 mt-2 hidden" id="date-error"></p>
               </div>
-              <div class="grid md:grid-cols-2 gap-6 mt-4">
-                <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                  <input 
-                    type="email" 
-                    id="res-email"
-                    required
-                    placeholder="seu@email.com"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">Telefone</label>
-                  <input 
-                    type="tel" 
-                    id="res-phone"
-                    required
-                    placeholder="912 345 678"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all"
-                  />
-                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-2 uppercase tracking-wider">Pessoas</label>
+                <select id="res-guests" class="w-full px-4 py-4 rounded-lg border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all text-gray-900 bg-neutral-50">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option value={n}>{n} {n === 1 ? 'Pessoa' : 'Pessoas'}</option>)}
+                </select>
               </div>
             </div>
 
-            <!-- Submit -->
-            <button 
-              type="submit" 
-              class="w-full bg-gold hover:bg-accent text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-            >
-              Confirmar Reserva
-            </button>
-          </div>
-        </form>
-
-        <!-- Success Message (Hidden) -->
-          <div id="success-message" class="hidden text-center py-10">
-            <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <!-- Step 2: Time Slots -->
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-3 uppercase tracking-wider">Horário</label>
+              <div id="slots-container" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
+                <div class="col-span-full text-gray-400 text-sm italic p-4 border border-dashed border-gray-200 rounded-lg text-center bg-neutral-50">
+                  Selecione uma data para ver disponibilidade
+                </div>
+              </div>
+              <input type="hidden" id="res-time" required />
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Reserva Confirmada!</h3>
-            <p class="text-gray-600 mb-6 font-medium">
+
+            <!-- Step 3: Contact Info (Hidden until slot selected) -->
+            <div id="contact-step" class="space-y-6 hidden opacity-0 transition-all duration-500">
+              <div class="border-t border-gray-100 pt-8">
+                <h4 class="text-sm uppercase tracking-wider text-gold font-medium mb-6">Seus Dados</h4>
+                
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Nome Completo</label>
+                    <input 
+                      type="text" 
+                      id="res-name"
+                      required
+                      placeholder="O seu nome"
+                      class="w-full px-4 py-4 rounded-lg border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all bg-neutral-50"
+                    />
+                  </div>
+                  <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        id="res-email"
+                        required
+                        placeholder="seu@email.com"
+                        class="w-full px-4 py-4 rounded-lg border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all bg-neutral-50"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-2">Telefone</label>
+                      <input 
+                        type="tel" 
+                        id="res-phone"
+                        required
+                        placeholder="912 345 678"
+                        class="w-full px-4 py-4 rounded-lg border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all bg-neutral-50"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button 
+                type="submit" 
+                class="w-full bg-gold hover:bg-accent text-white font-medium py-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 uppercase tracking-wider"
+              >
+                Confirmar Reserva
+              </button>
+            </div>
+          </form>
+
+          <!-- Success Message (Hidden) -->
+          <div id="success-message" class="hidden text-center py-16">
+            <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 class="text-3xl font-serif font-light text-gray-900 mb-3">Reserva Confirmada!</h3>
+            <p class="text-gray-500 mb-8">
               Obrigado pela sua preferência.
             </p>
-          <button id="reset-form" class="text-primary font-semibold hover:underline">Fazer nova reserva</button>
+            <p class="text-xs text-gray-400 mb-8">
+              Reserva confirmada sujeita a disponibilidade. Serão contactados em caso de necessidade de ajuste.
+            </p>
+            <button id="reset-form" class="text-gold font-medium hover:underline uppercase tracking-wider text-sm">
+              Fazer nova reserva
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<style>
-  .pattern-dots {
-    background-image: radial-gradient(#ffffff 2px, transparent 2px);
-    background-size: 30px 30px;
-  }
-</style>
 
 <script>
   import { restaurantConfig } from "../data/config.js";
@@ -178,12 +209,12 @@ import { restaurantConfig } from '../data/config.js';
       closedDays: [0, 1],
       maxGuests: 8,
       minAdvance: 30, // minutes
-      resDuration: 60, // minutes (new)
+      resDuration: 60, // minutes
       vacationStart: null,
       vacationEnd: null,
       lunch: { start: 12, end: 15 },
       dinner: { start: 19, end: 22 },
-      tables: [] // [{ id, name, capacity, combinable }]
+      tables: []
   };
 
   // 1. REAL-TIME SETTINGS LISTENER
@@ -206,10 +237,8 @@ import { restaurantConfig } from '../data/config.js';
           
           currentSettings.tables = s.tables || [];
 
-          // Update UI: Guests Dropdown
           updateGuestSelect();
 
-          // Update UI: Slots (if date selected)
           if (dateInput.value) {
               refreshAvailability(dateInput.value);
           }
@@ -229,16 +258,12 @@ import { restaurantConfig } from '../data/config.js';
       guestSelect.value = newVal > 0 ? newVal.toString() : "1";
   }
 
-  // HELPER: Check if guests can be accommodated (single table or combination)
   function canAccommodateGuests(guestCount, availableTables) {
-      // 1. Try single table first (best case)
       const singleTable = availableTables.find(t => t.capacity >= guestCount);
       if (singleTable) return true;
       
-      // 2. Filter combinable tables for combinations
       const combinableTables = availableTables.filter(t => t.combinable !== false);
       
-      // 3. Try combining 2 tables
       for (let i = 0; i < combinableTables.length; i++) {
           for (let j = i + 1; j < combinableTables.length; j++) {
               const combinedCapacity = combinableTables[i].capacity + combinableTables[j].capacity;
@@ -246,7 +271,6 @@ import { restaurantConfig } from '../data/config.js';
           }
       }
       
-      // 4. Try combining 3 tables (rare but possible)
       if (combinableTables.length >= 3) {
           for (let i = 0; i < combinableTables.length; i++) {
               for (let j = i + 1; j < combinableTables.length; j++) {
@@ -258,12 +282,10 @@ import { restaurantConfig } from '../data/config.js';
           }
       }
       
-      return false; // No solution found
+      return false;
   }
 
-  // HELPER: Find best table solution (returns { tables: [...], totalCapacity: X })
   function findBestTableSolution(guestCount, availableTables) {
-      // 1. Try single table first (prefer smallest that fits)
       const singleTables = availableTables
           .filter(t => t.capacity >= guestCount)
           .sort((a, b) => a.capacity - b.capacity);
@@ -272,10 +294,8 @@ import { restaurantConfig } from '../data/config.js';
           return { tables: [singleTables[0]], totalCapacity: singleTables[0].capacity };
       }
       
-      // Filter combinable tables for combinations
       const combinableTables = availableTables.filter(t => t.combinable !== false);
       
-      // 2. Try combining 2 tables (prefer smallest total capacity)
       let bestPair = null;
       let bestPairCapacity = Infinity;
       
@@ -293,7 +313,6 @@ import { restaurantConfig } from '../data/config.js';
           return { tables: bestPair, totalCapacity: bestPairCapacity };
       }
       
-      // 3. Try combining 3 tables
       let bestTrio = null;
       let bestTrioCapacity = Infinity;
       
@@ -315,10 +334,9 @@ import { restaurantConfig } from '../data/config.js';
           return { tables: bestTrio, totalCapacity: bestTrioCapacity };
       }
       
-      return null; // No solution found
+      return null;
   }
 
-  // 2. HELPER: Generate time slots
   function generateSlots(service) {
     const slots = [];
     let current = service.start * 60; 
@@ -334,7 +352,6 @@ import { restaurantConfig } from '../data/config.js';
     return slots;
   }
 
-  // 3. MAIN LOGIC: Date Change
   dateInput.min = new Date().toISOString().split('T')[0];
   
   dateInput.addEventListener('change', (e) => {
@@ -351,21 +368,18 @@ import { restaurantConfig } from '../data/config.js';
       if (!dateStr) return;
 
       const date = new Date(dateStr);
-      const day = date.getDay(); // 0 = Sun
+      const day = date.getDay();
 
-      // Reset UI
-      slotsContainer.innerHTML = '<div class="col-span-4 text-center py-2"><span class="animate-pulse text-gold">Verificando disponibilidade...</span></div>';
+      slotsContainer.innerHTML = '<div class="col-span-full text-center py-4"><span class="animate-pulse text-gold">Verificando disponibilidade...</span></div>';
       timeInput.value = '';
       contactStep.classList.add('hidden');
       dateError.classList.add('hidden');
 
-      // 1. Check Closed Days
       if (currentSettings.closedDays.includes(day)) {
-          showError("O restaurante encontra-se encerrado. Não é possível efetuar reservas.");
+          showError("O restaurante encontra-se encerrado neste dia.");
           return;
       }
 
-      // 2. Check Vacation
       if (currentSettings.vacationStart && currentSettings.vacationEnd) {
           const start = new Date(currentSettings.vacationStart);
           const end = new Date(currentSettings.vacationEnd);
@@ -380,14 +394,12 @@ import { restaurantConfig } from '../data/config.js';
           }
       }
 
-      // 3. Fetch Existing Reservations
       let takenSlots = [];
       try {
           const q = query(collection(db, "reservations"), where("date", "==", dateStr));
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
               const data = doc.data();
-              // Store full reservation object for Advanced mode (needs assignedTable)
               takenSlots.push({
                   time: data.time,
                   assignedTable: data.assignedTable || null
@@ -397,44 +409,39 @@ import { restaurantConfig } from '../data/config.js';
           console.error("Error fetching availability:", err);
       }
 
-      // 4. PRE-CHECK: Tables configuration
       if (!currentSettings.tables || currentSettings.tables.length === 0) {
-          slotsContainer.innerHTML = '<div class="col-span-4 text-center text-red-500 bg-red-50 p-4 rounded-lg border border-red-100 text-sm">O restaurante ainda não configurou as mesas. Por favor, tente mais tarde.</div>';
+          slotsContainer.innerHTML = '<div class="col-span-full text-center text-red-500 bg-red-50 p-4 rounded-lg text-sm">O restaurante ainda não configurou as mesas.</div>';
           return;
       }
 
-      // 5. Generate & Render Slots
       slotsContainer.innerHTML = '';
       const lunchSlots = generateSlots(currentSettings.lunch);
       const dinnerSlots = generateSlots(currentSettings.dinner);
       const allSlots = [...lunchSlots, ...dinnerSlots];
 
       if (allSlots.length === 0) {
-           slotsContainer.innerHTML = '<div class="col-span-4 text-center text-gray-500 py-2">Não há horários disponíveis para hoje.</div>';
+           slotsContainer.innerHTML = '<div class="col-span-full text-center text-gray-500 py-4">Não há horários disponíveis.</div>';
            return;
       }
 
       allSlots.forEach(time => {
           const slotBtn = document.createElement('button');
           slotBtn.type = 'button';
-          slotBtn.className = 'py-3 px-2 rounded-xl border text-sm font-medium transition-all hover:border-gold hover:bg-gold/5 active:scale-95 touch-manipulation';
+          slotBtn.className = 'py-3 px-2 rounded-lg border border-gray-200 text-sm font-medium transition-all hover:border-gold hover:bg-gold/5 active:scale-95 bg-neutral-50';
           slotBtn.textContent = time;
 
-          // Check if slot is in the past or too close (for same-day reservations)
           const [h, m] = time.split(':').map(Number);
           const slotDateTime = new Date(dateStr);
           slotDateTime.setHours(h, m, 0, 0);
           
           const now = new Date();
-          const minAdvanceMs = currentSettings.minAdvance * 60 * 1000; // Convert minutes to milliseconds
+          const minAdvanceMs = currentSettings.minAdvance * 60 * 1000;
           const isTooClosed = slotDateTime.getTime() - now.getTime() < minAdvanceMs;
 
           if (isTooClosed) {
               slotBtn.disabled = true;
-              slotBtn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed', 'line-through');
-              slotBtn.title = "Horário já passou ou muito próximo";
+              slotBtn.classList.add('bg-gray-100', 'text-gray-300', 'cursor-not-allowed', 'line-through');
           } else {
-              // ADVANCED CAPACITY LOGIC (with Duration support)
               const guestCount = parseInt(guestSelect.value);
               const currentSlotMin = h * 60 + m;
               const duration = currentSettings.resDuration || 60;
@@ -449,7 +456,6 @@ import { restaurantConfig } from '../data/config.js';
                       const newStartMin = currentSlotMin;
                       const newEndMin = newStartMin + duration;
 
-                      // OVERLAP CHECK: (Start1 < End2) && (Start2 < End1)
                       if (extStartMin < newEndMin && newStartMin < extEndMin) {
                           const tableIds = res.assignedTable.split('+');
                           occupiedTableIds.push(...tableIds);
@@ -457,18 +463,15 @@ import { restaurantConfig } from '../data/config.js';
                   }
               });
               
-              // Get available tables
               const availableTables = currentSettings.tables.filter(table => 
                   !occupiedTableIds.includes(table.id)
               );
               
-              // Try to find a solution (single table or combination)
               const isAvailable = canAccommodateGuests(guestCount, availableTables);
 
               if (!isAvailable) {
                   slotBtn.disabled = true;
-                  slotBtn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed', 'line-through');
-                  slotBtn.title = "Esgotado";
+                  slotBtn.classList.add('bg-gray-100', 'text-gray-300', 'cursor-not-allowed', 'line-through');
               } else {
                   slotBtn.onclick = () => selectSlot(slotBtn, time);
               }
@@ -487,9 +490,9 @@ import { restaurantConfig } from '../data/config.js';
 
   function selectSlot(btn, time) {
     Array.from(slotsContainer.children).forEach((b: any) => {
-        if (!b.disabled) b.className = 'py-3 px-2 rounded-xl border text-sm font-medium transition-all hover:border-gold hover:bg-gold/5 active:scale-95 touch-manipulation';
+        if (!b.disabled) b.className = 'py-3 px-2 rounded-lg border border-gray-200 text-sm font-medium transition-all hover:border-gold hover:bg-gold/5 active:scale-95 bg-neutral-50';
     });
-    btn.className = 'py-3 px-2 rounded-xl border bg-gold text-white border-gold shadow-md transform scale-105 z-10';
+    btn.className = 'py-3 px-2 rounded-lg border bg-gold text-white border-gold shadow-md transform scale-105';
     timeInput.value = time;
     contactStep.classList.remove('hidden');
     setTimeout(() => {
@@ -498,11 +501,11 @@ import { restaurantConfig } from '../data/config.js';
     }, 50);
   }
 
-  // SUBMIT
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!timeInput.value) { alert('Por favor selecione um horário'); return; }
     loadingOverlay.classList.remove('hidden');
+    loadingOverlay.classList.add('flex');
 
     try {
         const formData: any = {
@@ -543,7 +546,6 @@ import { restaurantConfig } from '../data/config.js';
             const duration = currentSettings.resDuration || 60;
             const newEndMin = newStartMin + duration;
             
-            // 1. Fetch ALL reservations for this date to check overlap
             const q = query(
                 collection(db, "reservations"), 
                 where("date", "==", dateInput.value)
@@ -558,7 +560,6 @@ import { restaurantConfig } from '../data/config.js';
                     const extStartMin = extH * 60 + extM;
                     const extEndMin = extStartMin + duration;
                     
-                    // Overlap condition: (Start1 < End2) && (Start2 < End1)
                     if (extStartMin < newEndMin && newStartMin < extEndMin) {
                         const tableIds = data.assignedTable.split('+');
                         occupiedTableIds.push(...tableIds);
@@ -566,17 +567,16 @@ import { restaurantConfig } from '../data/config.js';
                 }
             });
             
-            // 2. Find best solution (single table or combination)
             const allAvailableTables = currentSettings.tables.filter(t => !occupiedTableIds.includes(t.id));
             const solution = findBestTableSolution(guestCount, allAvailableTables);
             
             if (!solution) {
                 alert('Desculpe, não há mesas disponíveis para este período. Por favor escolha outro horário.');
                 loadingOverlay.classList.add('hidden');
+                loadingOverlay.classList.remove('flex');
                 return;
             }
             
-            // 3. Assign table(s)
             if (solution.tables.length === 1) {
                 formData.assignedTable = solution.tables[0].id;
                 formData.assignedTableName = solution.tables[0].name;
@@ -592,19 +592,19 @@ import { restaurantConfig } from '../data/config.js';
 
     } catch (err: any) {
         console.error("Error writing document: ", err);
-        const errorDetails = err && typeof err === 'object' ? JSON.stringify(err) : String(err);
         const errorMessage = (err && err.message) || String(err);
         const errorCode = (err && err.code) || 'unknown';
         
-        alert(`Ocorreu um erro ao registar a reserva.\n\nDetalhes: ${errorMessage}\nCódigo: ${errorCode}\n\nPor favor, tire uma captura de ecrã deste erro.`);
+        alert(`Ocorreu um erro ao registar a reserva.\n\nDetalhes: ${errorMessage}\nCódigo: ${errorCode}`);
     } finally {
         loadingOverlay.classList.add('hidden');
+        loadingOverlay.classList.remove('flex');
     }
   });
 
   resetButton.addEventListener('click', () => {
     form.reset();
-    slotsContainer.innerHTML = '<div class="col-span-4 text-gray-400 text-sm italic p-2 border border-dashed rounded text-center">Selecione uma data para ver disponibilidade</div>';
+    slotsContainer.innerHTML = '<div class="col-span-full text-gray-400 text-sm italic p-4 border border-dashed border-gray-200 rounded-lg text-center bg-neutral-50">Selecione uma data para ver disponibilidade</div>';
     timeInput.value = '';
     contactStep.classList.add('hidden', 'opacity-0');
     form.classList.remove('hidden');
