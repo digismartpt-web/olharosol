@@ -298,7 +298,7 @@ const menuData = {
           </a>
           
           <div class="mt-8">
-            <button class="px-8 py-4 bg-gold text-white font-medium uppercase tracking-[0.2em] text-sm rounded-lg shadow-xl hover:bg-white hover:text-gold transition-all duration-300 transform hover:-translate-y-1 cursor-default">
+            <button id="clickCollectBtn" class="px-8 py-4 bg-gold text-white font-medium uppercase tracking-[0.2em] text-sm rounded-lg shadow-xl hover:bg-white hover:text-gold transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
               Click & Collect
             </button>
           </div>
@@ -346,6 +346,19 @@ const menuData = {
         <li>Vizela</li>
       </ul>
       <p class="mt-8 text-xs text-center text-gray-500 uppercase tracking-widest">Taxas podem aplicar-se</p>
+    </div>
+  </div>
+
+  <!-- Click & Collect Modal -->
+  <div id="clickCollectModal" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-8 md:p-12 max-w-md w-full relative text-center">
+      <button id="closeClickCollect" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <h3 class="text-2xl font-serif text-gold mb-4">Informação</h3>
+      <p class="text-lg text-white">Sob reserva de validação</p>
     </div>
   </div>
 
@@ -466,6 +479,11 @@ const menuData = {
       const zonesLightbox = document.getElementById('zonesLightbox');
       const closeZones = document.getElementById('closeZones');
 
+      // Click & Collect Logic
+      const clickCollectBtn = document.getElementById('clickCollectBtn');
+      const clickCollectModal = document.getElementById('clickCollectModal');
+      const closeClickCollect = document.getElementById('closeClickCollect');
+
       // Functions for Zones
       function openZones() {
         zonesLightbox.classList.remove('hidden');
@@ -481,6 +499,23 @@ const menuData = {
       closeZones?.addEventListener('click', closeZonesFn);
       zonesLightbox?.addEventListener('click', (e) => {
         if (e.target === zonesLightbox) closeZonesFn();
+      });
+
+      // Functions for Click & Collect
+      function openClickCollect() {
+        clickCollectModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeClickCollectFn() {
+        clickCollectModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      clickCollectBtn?.addEventListener('click', openClickCollect);
+      closeClickCollect?.addEventListener('click', closeClickCollectFn);
+      clickCollectModal?.addEventListener('click', (e) => {
+        if (e.target === clickCollectModal) closeClickCollectFn();
       });
       
       // Functions for Menu Lightbox
@@ -533,7 +568,9 @@ const menuData = {
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeLightboxFn();
+          closeLightboxFn();
           closeZonesFn();
+          closeClickCollectFn();
         }
       });
     });
