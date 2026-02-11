@@ -45,7 +45,7 @@ import { restaurantConfig } from '../data/config.js';
                   <p>{restaurantConfig.hours.domingo} Dom</p>
                 </div>
                 <p class="mt-4 text-xs text-gray-400 italic">
-                  * A reserva de mesa online não se encontra disponível para esta data. Por favor, consulte os horários e condições de reserva nas informações à esquerda.
+                  * O restaurante encontra-se aberto conforme os horários acima indicados, no entanto, as reservas de mesa estão disponíveis apenas para quarta e quinta-feira.
                 </p>
               </div>
             </div>
@@ -379,7 +379,7 @@ import { restaurantConfig } from '../data/config.js';
       dateError.classList.add('hidden');
 
       if (currentSettings.closedDays.includes(day)) {
-          showError("A reserva de mesa online não se encontra disponível para esta data. Por favor, consulte os horários e condições de reserva nas informações à esquerda.");
+          showError("A reserva de mesa online não se encontra disponível para esta data. Por favor, consulte os horários e condições de reserva nas informações.");
           return;
       }
 
