@@ -4,7 +4,7 @@ import { restaurantConfig } from '../data/config.js';
 const menuItems = [
   { href: '/#ementa', text: 'Ementa' },
   { href: '/#reservas', text: 'Reservas' },
-  { href: '/#takeaway', text: 'Takeaway' },
+  { href: '/#takeaway', text: 'Click & Collect' },
   { href: '/#contactos', text: 'Contactos' },
 ];
 ---
@@ -16,22 +16,46 @@ const menuItems = [
     <nav id="nav-container" class="flex flex-col items-center justify-center transition-all duration-300 pt-6 pb-2 md:pt-10 md:pb-4">
       
       <!-- Logo / Name -->
-      <a href="/#home" id="logo-link" class="flex flex-col items-center text-center group transition-all duration-300 mb-4 md:mb-6">
-        <span id="logo-text" class="font-serif text-3xl md:text-5xl tracking-wider text-neutral-900 transition-all duration-300">{restaurantConfig.name}</span>
-        <span id="logo-sub" class="text-xs md:text-sm tracking-[0.3em] uppercase text-neutral-500 mt-2 transition-all duration-300">Pizzeria</span>
-      </a>
+      <div class="flex items-center gap-4 mb-4 md:mb-6 md:flex-col">
+        <a href="/#home" id="logo-link" class="flex flex-col items-center text-center group transition-all duration-300">
+          <span id="logo-text" class="font-serif text-3xl md:text-5xl tracking-wider text-neutral-900 transition-all duration-300">{restaurantConfig.name}</span>
+          <span id="logo-sub" class="text-xs md:text-sm tracking-[0.3em] uppercase text-neutral-500 mt-2 transition-all duration-300">Pizzeria</span>
+        </a>
+        <!-- Mobile-only Pedir Online button beside logo -->
+        <a 
+          href="https://olharosol.newappai.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="md:hidden px-3 py-1.5 bg-gold text-white text-[9px] font-bold uppercase tracking-widest rounded-full hover:bg-neutral-900 transition-all duration-300 shadow-md whitespace-nowrap"
+        >
+          Pedir Online
+        </a>
+      </div>
 
       <!-- Desktop Menu -->
-      <div id="desktop-menu" class="hidden md:flex items-center space-x-12 opacity-100 transition-all duration-300">
+      <div id="desktop-menu" class="hidden md:flex items-start space-x-12 opacity-100 transition-all duration-300">
         {menuItems.map(item => (
-          <a
-            href={item.href}
-            class="text-xs md:text-sm uppercase tracking-[0.2em] text-neutral-600 hover:text-gold transition-colors duration-300"
-          >
-            {item.text}
-          </a>
+          <div class="flex flex-col items-center">
+            <a
+              href={item.href}
+              class="text-xs md:text-sm uppercase tracking-[0.2em] text-neutral-600 hover:text-gold transition-colors duration-300 leading-tight"
+            >
+              {item.text}
+            </a>
+            {item.text === 'Click & Collect' && (
+              <a 
+                href="https://olharosol.newappai.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="mt-1 px-3 py-0.5 bg-gold text-white text-[8px] font-bold uppercase tracking-widest rounded-full hover:bg-neutral-900 transition-all duration-300 shadow-sm whitespace-nowrap absolute translate-y-6"
+              >
+                Pedir Online
+              </a>
+            )}
+          </div>
         ))}
       </div>
+
 
       <!-- Mobile Menu Button (Absolute positioned to stay accessible) -->
       <button 
@@ -68,12 +92,24 @@ const menuItems = [
         Início
       </a>
       {menuItems.map(item => (
-        <a
-          href={item.href}
-          class="block text-3xl font-serif text-white tracking-wider hover:text-gold transition-colors"
-        >
-          {item.text}
-        </a>
+        <div class="flex flex-col items-center gap-3">
+          <a
+            href={item.href}
+            class="block text-3xl font-serif text-white tracking-wider hover:text-gold transition-colors"
+          >
+            {item.text}
+          </a>
+          {item.text === 'Click & Collect' && (
+            <a 
+              href="https://olharosol.newappai.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="px-8 py-3 bg-gold text-white text-sm font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-gold transition-all duration-300 shadow-lg"
+            >
+              Pedir Online
+            </a>
+          )}
+        </div>
       ))}
     </nav>
 
