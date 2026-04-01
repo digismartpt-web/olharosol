@@ -456,6 +456,37 @@ import Layout from '../layouts/Layout.astro';
           })
           .subscribe();
     }
+    
+    // Always attach listeners after rendering or refreshing
+    setTimeout(attachReservationListeners, 500);
+  }
+
+  function attachReservationListeners() {
+    console.log("Attaching event listeners to reservation buttons...");
+    
+    // Delete individual
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    console.log(`Found ${deleteButtons.length} delete buttons`);
+    
+    deleteButtons.forEach(btn => {
+      // Remove old listener if any (by cloning)
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      newBtn.addEventListener('click', async (e: any) => {
+        const id = e.currentTarget.dataset.id;
+        console.log("CLICK: Delete button for ID:", id);
+        
+        if (confirm('Deseja eliminar esta reserva?')) {
+          const { error } = await supabase.from('reservations').delete().eq('id', id);
+          if (error) {
+              alert("Erro ao eliminar: " + error.message);
+          } else {
+              fetchReservationDataOnly();
+          }
+        }
+      });
+    });
   }
 
   async function fetchReservationDataOnly() {
@@ -501,50 +532,39 @@ import Layout from '../layouts/Layout.astro';
       const resDate = new Date(data.date + 'T' + data.time);
       const isPast = resDate < new Date();
       const statusColor = isPast ? 'border-gray-300 bg-gray-50 opacity-75' : 'border-primary bg-white';
-      const statusText = isPast ? '<span class="text-gray-500">Passado</span>' : `<span class="text-green-600 font-bold">${data.status}</span>`;
+      const statusText = isPast ? 'Passado' : data.status;
 
       const el = document.createElement('div');
       el.className = `flex justify-between items-center p-4 rounded-lg border-l-4 shadow-sm ${statusColor}`;
       
       el.innerHTML = `
-        <div>
-          <div class="font-bold text-lg text-gray-800 flex items-center gap-2">
-             ${data.time} <span class="text-sm font-normal text-gray-500">(${data.date})</span>
-             <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">📍 Mesa: ${getTableNames(data.table_id)}</span>
+        <div class="flex-1">
+          <div class="font-bold text-lg text-gray-800 flex items-center gap-2 flex-wrap">
+             ${data.time} 
+             <span class="text-xs font-normal text-gray-500">(${data.date})</span>
+             <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">📍 ${getTableNames(data.table_id)}</span>
           </div>
-          <div class="text-gray-800 font-medium">${data.first_name} ${data.last_name}</div>
-          <div class="text-sm text-gray-500 flex items-center gap-2 mt-1">
-            <span class="bg-gray-200 px-2 rounded-full text-xs font-bold text-gray-700">${data.guests} Pessoas</span>
-            <span>${data.phone}</span>
+          <div class="text-gray-900 font-semibold mt-1">${data.first_name} ${data.last_name}</div>
+          <div class="text-xs text-gray-500 flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+             <span>📧 ${data.email}</span>
+             <span>📞 ${data.phone}</span>
+             <span class="bg-gray-100 px-2 py-0.5 rounded text-gray-700 font-medium">👥 ${data.guests} Pessoas</span>
           </div>
         </div>
-        <div class="text-right flex flex-col items-end gap-2">
-           <div class="text-xs uppercase tracking-wide bg-gray-100 px-2 py-1 rounded">${statusText}</div>
-           <a href="mailto:${data.email}" class="text-xs text-primary hover:underline">${data.email}</a>
-           <button class="delete-btn text-red-500 hover:text-red-700 text-xs flex items-center gap-1 mt-1 transition-colors" data-id="${data.id}">
-              Eliminar
-           </button>
+        <div class="flex items-center gap-4">
+          <span class="text-xs font-bold uppercase ${isPast ? 'text-gray-400' : 'text-green-600'}">${statusText}</span>
+          <button class="delete-btn p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors" data-id="${data.id}" title="Eliminar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
         </div>
       `;
       resList.appendChild(el);
     });
 
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', async (e: any) => {
-        const id = e.currentTarget.dataset.id;
-        if (confirm('Deseja eliminar esta reserva?')) {
-          console.log("Attempting to delete reservation:", id);
-          const { error } = await supabase.from('reservations').delete().eq('id', id);
-          if (error) {
-              console.error("Delete error:", error);
-              alert("Erro ao eliminar reserva: " + error.message);
-          } else {
-              console.log("Delete successful");
-              fetchReservationDataOnly();
-          }
-        }
-      });
-    });
+    // Re-attach listeners after DOM updates
+    attachReservationListeners();
   }
 
   btnDeleteDay?.addEventListener('click', async () => {
