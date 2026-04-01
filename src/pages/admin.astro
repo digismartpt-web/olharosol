@@ -428,15 +428,30 @@ import Layout from '../layouts/Layout.astro';
       updateFilterVisuals();
   });
 
+  async function subscribeToReservations() {
+    let query = supabase.from('reservations').select('*');
+    if (currentFilterDate) {
+        query = query.eq('date', currentFilterDate);
+    } else {
+        query = query.order('date', { ascending: false });
+    }
+
+    const { data } = await query;
+    allReservations = data || [];
+    
+    allReservations.sort((a, b) => {
+        if (a.date !== b.date) return b.date.localeCompare(a.date);
+        return a.time.localeCompare(b.time);
+    });
+
     renderList();
 
-    // Setup listener ONLY ONCE
+    // Setup listener ONLY ONCE to avoid recursion/memory leaks
     if (!reservationsChannel) {
         console.log("Setting up real-time listener for reservations...");
         reservationsChannel = supabase.channel('reservations-all')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, () => {
               console.log("Real-time update detected in reservations");
-              // Re-fetch data without re-subscribing
               fetchReservationDataOnly();
           })
           .subscribe();
