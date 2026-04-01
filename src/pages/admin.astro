@@ -229,16 +229,22 @@ import Layout from '../layouts/Layout.astro';
   let currentPage = 1;
   const itemsPerPage = 8;
   let currentFilterDate = new Date().toISOString().split('T')[0];
+  let isDashboardInitialized = false;
+  let isSaving = false;
 
   // AUTH STATE
   supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
       loginView.classList.add('hidden');
       dashboardView.classList.remove('hidden');
-      initDashboard();
+      if (!isDashboardInitialized) {
+        initDashboard();
+        isDashboardInitialized = true;
+      }
     } else {
       loginView.classList.remove('hidden');
       dashboardView.classList.add('hidden');
+      isDashboardInitialized = false;
     }
   });
 
@@ -265,9 +271,20 @@ import Layout from '../layouts/Layout.astro';
 
   // SETTINGS
   async function fetchSettings() {
-    const { data, error } = await supabase.from('settings').select('*').single();
-    if (data && !error) {
+    if (isSaving) return; // Don't overwrite while saving
+    
+    // Always try to get the row with ID 1, if not get the most recent one
+    const { data, error } = await supabase.from('settings').select('*').order('id', { ascending: true }).limit(1).maybeSingle();
+    
+    if (error) {
+        console.error("Error fetching settings:", error);
+        return;
+    }
+    
+    if (data) {
       currentSettings = data;
+      console.log("Settings loaded:", data.id);
+      
       (document.getElementById('max-guests') as HTMLInputElement).value = data.max_guests_per_booking || 8;
       (document.getElementById('min-advance') as HTMLInputElement).value = data.min_advance_minutes || 30;
       (document.getElementById('res-duration') as HTMLInputElement).value = data.reservation_duration_minutes || 60;
@@ -277,10 +294,12 @@ import Layout from '../layouts/Layout.astro';
          cb.checked = closedDays.includes(parseInt(cb.value));
       });
 
-      // Simple handling for first vacation period
       if (data.vacation_periods && data.vacation_periods.length > 0) {
-        (document.getElementById('vacation-start') as HTMLInputElement).value = data.vacation_periods[0].start;
-        (document.getElementById('vacation-end') as HTMLInputElement).value = data.vacation_periods[0].end;
+        (document.getElementById('vacation-start') as HTMLInputElement).value = data.vacation_periods[0].start || '';
+        (document.getElementById('vacation-end') as HTMLInputElement).value = data.vacation_periods[0].end || '';
+      } else {
+        (document.getElementById('vacation-start') as HTMLInputElement).value = '';
+        (document.getElementById('vacation-end') as HTMLInputElement).value = '';
       }
       
       (document.getElementById('lunch-start') as HTMLInputElement).value = data.lunch_start || 12;
@@ -293,7 +312,8 @@ import Layout from '../layouts/Layout.astro';
   // TABLES
   async function fetchTables() {
     const { data, error } = await supabase.from('restaurant_tables').select('*').eq('active', true).order('created_at', { ascending: true });
-    if (data && !error) {
+    if (error) console.error("Error fetching tables:", error);
+    if (data) {
       tablesData = data;
       renderTables();
     }
@@ -507,6 +527,7 @@ import Layout from '../layouts/Layout.astro';
     const vacationEnd = (document.getElementById('vacation-end') as HTMLInputElement).value;
     
     try {
+        isSaving = true;
         // Save Settings
         const settingsUpdate = {
             max_guests_per_booking: parseInt((document.getElementById('max-guests') as HTMLInputElement).value),
@@ -521,10 +542,26 @@ import Layout from '../layouts/Layout.astro';
             updated_at: new Date().toISOString()
         };
 
-        if (currentSettings) {
-            await supabase.from('settings').update(settingsUpdate).eq('id', currentSettings.id);
-        } else {
-            await supabase.from('settings').insert([settingsUpdate]);
+        // Enforce ID 1 if no settings exist, or use existing ID
+        const targetId = currentSettings?.id || 1;
+        console.log("Saving settings to ID:", targetId);
+
+        const { data: savedSettings, error: settingsError } = await supabase
+            .from('settings')
+            .upsert({
+                id: targetId,
+                ...settingsUpdate
+            })
+            .select()
+            .single();
+
+        if (settingsError) {
+            console.error("Settings save error:", settingsError);
+            throw settingsError;
+        }
+        
+        if (savedSettings) {
+            currentSettings = savedSettings;
         }
 
         // Save Tables
@@ -542,18 +579,27 @@ import Layout from '../layouts/Layout.astro';
             };
 
             if (id.startsWith('new-')) {
-                await supabase.from('restaurant_tables').insert([tableData]);
+                const { error: tableError } = await supabase.from('restaurant_tables').insert([tableData]);
+                if (tableError) throw tableError;
             } else {
-                await supabase.from('restaurant_tables').update(tableData).eq('id', id);
+                const { error: tableError } = await supabase.from('restaurant_tables').update(tableData).eq('id', id);
+                if (tableError) throw tableError;
             }
         }
 
         btn.textContent = "Guardado! ✅";
-        setTimeout(() => { btn.disabled = false; btn.textContent = "Salvar Configuração"; fetchSettings(); fetchTables(); }, 2000);
-    } catch (err) {
-        console.error(err);
-        btn.textContent = "Erro ❌";
-        setTimeout(() => { btn.disabled = false; btn.textContent = "Salvar Configuração"; }, 2000);
+        setTimeout(() => { 
+            btn.disabled = false; 
+            btn.textContent = "Salvar Configuração"; 
+            isSaving = false;
+            fetchTables(); 
+        }, 2000);
+    } catch (err: any) {
+        isSaving = false;
+        console.error("Complete Save Error Log:", err);
+        const errorMsg = err.message || (typeof err === 'string' ? err : "Erro desconhecido");
+        btn.textContent = `Erro! ❌ (${errorMsg})`;
+        setTimeout(() => { btn.disabled = false; btn.textContent = "Salvar Configuração"; }, 5000);
     }
   });
 
