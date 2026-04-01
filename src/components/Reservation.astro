@@ -229,22 +229,45 @@ import { restaurantConfig } from '../data/config.js';
 
   // 1. REAL-TIME SETTINGS & TABLES LISTENER
   async function initData() {
-    // Fetch Settings
+    // Fetch Settings - Use a more robust fetch (consistent with admin)
     const { data: settings, error: settingsError } = await supabase
       .from('settings')
       .select('*')
-      .single();
+      .order('id', { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
     if (settings && !settingsError) {
+      const parseTime = (t) => {
+          if (!t) return null;
+          if (typeof t === 'number') return t;
+          return parseInt(t.split(':')[0]);
+      };
+
       currentSettings.closedDays = settings.closed_days || [0, 1];
       currentSettings.maxGuests = settings.max_guests_per_booking || 8;
       currentSettings.minAdvance = settings.min_advance_minutes || 30;
       currentSettings.resDuration = settings.reservation_duration_minutes || 60;
       currentSettings.vacationPeriods = settings.vacation_periods || [];
-      currentSettings.lunch = { start: settings.lunch_start || 12, end: settings.lunch_end || 15 };
-      currentSettings.dinner = { start: settings.dinner_start || 19, end: settings.dinner_end || 22 };
+      currentSettings.lunch = { 
+          start: parseTime(settings.lunch_start) || 12, 
+          end: parseTime(settings.lunch_end) || 15 
+      };
+      currentSettings.dinner = { 
+          start: parseTime(settings.dinner_start) || 19, 
+          end: parseTime(settings.dinner_end) || 22 
+      };
       
+      console.log("Reservation Settings Loaded:", {
+          lunch: currentSettings.lunch,
+          dinner: currentSettings.dinner,
+          closedDays: currentSettings.closedDays,
+          maxGuests: currentSettings.maxGuests
+      });
+
       updateGuestSelect();
+    } else if (settingsError) {
+      console.error("Error loading settings in Reservation component:", settingsError);
     }
 
     // Fetch Tables
@@ -365,9 +388,19 @@ import { restaurantConfig } from '../data/config.js';
 
   function generateSlots(service) {
     const slots = [];
+    if (!service || !service.start || !service.end) {
+        console.warn("Invalid service hours for slot generation:", service);
+        return [];
+    }
+    
     let current = service.start * 60; 
     const end = service.end * 60;
     
+    if (current >= end) {
+        console.warn(`Service start (${service.start}) >= end (${service.end}). No slots generated.`);
+        return [];
+    }
+
     while (current < end) {
       const h = Math.floor(current / 60);
       const m = current % 60;
