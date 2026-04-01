@@ -231,6 +231,17 @@ import Layout from '../layouts/Layout.astro';
   let currentFilterDate = new Date().toISOString().split('T')[0];
   let isDashboardInitialized = false;
   let isSaving = false;
+  let reservationsChannel = null;
+
+  function getTableNames(idInput) {
+      if (!idInput) return "Sem mesa";
+      const ids = idInput.toString().split('+');
+      const names = ids.map(id => {
+          const table = tablesData.find(t => t.id.toString() === id.toString());
+          return table ? table.name : id;
+      });
+      return names.join(' + ');
+  }
 
   // AUTH STATE
   supabase.auth.onAuthStateChange((event, session) => {
@@ -417,7 +428,22 @@ import Layout from '../layouts/Layout.astro';
       updateFilterVisuals();
   });
 
-  async function subscribeToReservations() {
+    renderList();
+
+    // Setup listener ONLY ONCE
+    if (!reservationsChannel) {
+        console.log("Setting up real-time listener for reservations...");
+        reservationsChannel = supabase.channel('reservations-all')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, () => {
+              console.log("Real-time update detected in reservations");
+              // Re-fetch data without re-subscribing
+              fetchReservationDataOnly();
+          })
+          .subscribe();
+    }
+  }
+
+  async function fetchReservationDataOnly() {
     let query = supabase.from('reservations').select('*');
     if (currentFilterDate) {
         query = query.eq('date', currentFilterDate);
@@ -425,7 +451,11 @@ import Layout from '../layouts/Layout.astro';
         query = query.order('date', { ascending: false });
     }
 
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) {
+        console.error("Error fetching reservation data:", error);
+        return;
+    }
     allReservations = data || [];
     
     allReservations.sort((a, b) => {
@@ -434,11 +464,6 @@ import Layout from '../layouts/Layout.astro';
     });
 
     renderList();
-
-    // Change listener
-    supabase.channel('reservations-all')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, () => subscribeToReservations())
-      .subscribe();
   }
 
   function renderList() {
@@ -470,7 +495,7 @@ import Layout from '../layouts/Layout.astro';
         <div>
           <div class="font-bold text-lg text-gray-800 flex items-center gap-2">
              ${data.time} <span class="text-sm font-normal text-gray-500">(${data.date})</span>
-             <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">📍 Mesa: ${data.table_id}</span>
+             <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">📍 Mesa: ${getTableNames(data.table_id)}</span>
           </div>
           <div class="text-gray-800 font-medium">${data.first_name} ${data.last_name}</div>
           <div class="text-sm text-gray-500 flex items-center gap-2 mt-1">
@@ -493,8 +518,15 @@ import Layout from '../layouts/Layout.astro';
       btn.addEventListener('click', async (e: any) => {
         const id = e.currentTarget.dataset.id;
         if (confirm('Deseja eliminar esta reserva?')) {
-          await supabase.from('reservations').delete().eq('id', id);
-          subscribeToReservations();
+          console.log("Attempting to delete reservation:", id);
+          const { error } = await supabase.from('reservations').delete().eq('id', id);
+          if (error) {
+              console.error("Delete error:", error);
+              alert("Erro ao eliminar reserva: " + error.message);
+          } else {
+              console.log("Delete successful");
+              fetchReservationDataOnly();
+          }
         }
       });
     });
@@ -503,8 +535,15 @@ import Layout from '../layouts/Layout.astro';
   btnDeleteDay?.addEventListener('click', async () => {
       if (!currentFilterDate) return alert('Selecione uma data.');
       if (confirm(`Eliminar TODAS as ${allReservations.length} reservas de ${currentFilterDate}?`)) {
-          await supabase.from('reservations').delete().eq('date', currentFilterDate);
-          subscribeToReservations();
+          console.log("Attempting to delete all reservations for date:", currentFilterDate);
+          const { error } = await supabase.from('reservations').delete().eq('date', currentFilterDate);
+          if (error) {
+              console.error("Delete all error:", error);
+              alert("Erro ao eliminar reservas: " + error.message);
+          } else {
+              console.log("Bulk delete successful");
+              fetchReservationDataOnly();
+          }
       }
   });
 
