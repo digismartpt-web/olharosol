@@ -302,10 +302,16 @@ import Layout from '../layouts/Layout.astro';
         (document.getElementById('vacation-end') as HTMLInputElement).value = '';
       }
       
-      (document.getElementById('lunch-start') as HTMLInputElement).value = data.lunch_start || 12;
-      (document.getElementById('lunch-end') as HTMLInputElement).value = data.lunch_end || 15;
-      (document.getElementById('dinner-start') as HTMLInputElement).value = data.dinner_start || 19;
-      (document.getElementById('dinner-end') as HTMLInputElement).value = data.dinner_end || 22;
+      const parseTime = (t) => {
+          if (!t) return null;
+          if (typeof t === 'number') return t;
+          return parseInt(t.split(':')[0]);
+      };
+
+      (document.getElementById('lunch-start') as HTMLInputElement).value = (parseTime(data.lunch_start) || 12).toString();
+      (document.getElementById('lunch-end') as HTMLInputElement).value = (parseTime(data.lunch_end) || 15).toString();
+      (document.getElementById('dinner-start') as HTMLInputElement).value = (parseTime(data.dinner_start) || 19).toString();
+      (document.getElementById('dinner-end') as HTMLInputElement).value = (parseTime(data.dinner_end) || 22).toString();
     }
   }
 
@@ -521,6 +527,7 @@ import Layout from '../layouts/Layout.astro';
     const btn = settingsForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     btn.disabled = true;
     btn.innerHTML = 'A guardar...';
+    console.log("Starting save process...");
 
     const closedDays = Array.from(document.querySelectorAll('input[name="closed"]:checked')).map((cb: HTMLInputElement) => parseInt(cb.value));
     const vacationStart = (document.getElementById('vacation-start') as HTMLInputElement).value;
@@ -528,6 +535,9 @@ import Layout from '../layouts/Layout.astro';
     
     try {
         isSaving = true;
+        // Helper to format hours as HH:00:00 for Postgres TIME type
+        const formatTime = (h) => `${h.toString().padStart(2, '0')}:00:00`;
+        
         // Save Settings
         const settingsUpdate = {
             max_guests_per_booking: parseInt((document.getElementById('max-guests') as HTMLInputElement).value),
@@ -535,23 +545,29 @@ import Layout from '../layouts/Layout.astro';
             reservation_duration_minutes: parseInt((document.getElementById('res-duration') as HTMLInputElement).value),
             closed_days: closedDays,
             vacation_periods: vacationStart && vacationEnd ? [{ start: vacationStart, end: vacationEnd }] : [],
-            lunch_start: parseInt((document.getElementById('lunch-start') as HTMLInputElement).value),
-            lunch_end: parseInt((document.getElementById('lunch-end') as HTMLInputElement).value),
-            dinner_start: parseInt((document.getElementById('dinner-start') as HTMLInputElement).value),
-            dinner_end: parseInt((document.getElementById('dinner-end') as HTMLInputElement).value),
+            lunch_start: formatTime(parseInt((document.getElementById('lunch-start') as HTMLInputElement).value || "12")),
+            lunch_end: formatTime(parseInt((document.getElementById('lunch-end') as HTMLInputElement).value || "15")),
+            dinner_start: formatTime(parseInt((document.getElementById('dinner-start') as HTMLInputElement).value || "19")),
+            dinner_end: formatTime(parseInt((document.getElementById('dinner-end') as HTMLInputElement).value || "22")),
             updated_at: new Date().toISOString()
         };
 
+        console.log("Settings data preparation complete:", settingsUpdate);
+
         // Enforce ID 1 if no settings exist, or use existing ID
         const targetId = currentSettings?.id || 1;
-        console.log("Saving settings to ID:", targetId);
+        console.log("Targeting settings ID:", targetId);
+        
+        const finalPayload = {
+            id: targetId,
+            ...settingsUpdate
+        };
+
+        console.log("FINAL PAYLOAD TO SUPABASE:", JSON.stringify(finalPayload, null, 2));
 
         const { data: savedSettings, error: settingsError } = await supabase
             .from('settings')
-            .upsert({
-                id: targetId,
-                ...settingsUpdate
-            })
+            .upsert(finalPayload)
             .select()
             .single();
 
@@ -562,9 +578,11 @@ import Layout from '../layouts/Layout.astro';
         
         if (savedSettings) {
             currentSettings = savedSettings;
+            console.log("Save successful. New settings state:", currentSettings);
         }
 
         // Save Tables
+        console.log("Saving tables...");
         const tableRows = document.querySelectorAll('.table-name');
         for (const input of Array.from(tableRows) as HTMLInputElement[]) {
             const id = input.dataset.tableId;
@@ -596,9 +614,13 @@ import Layout from '../layouts/Layout.astro';
         }, 2000);
     } catch (err: any) {
         isSaving = false;
-        console.error("Complete Save Error Log:", err);
+        console.error("CRITICAL SAVE ERROR:", err);
         const errorMsg = err.message || (typeof err === 'string' ? err : "Erro desconhecido");
-        btn.textContent = `Erro! ❌ (${errorMsg})`;
+        
+        // Show context in the button for the user
+        btn.textContent = `Erro! ❌ (Ver console F12)`;
+        alert(`Erro ao salvar: ${errorMsg}\n\nVerifique a console do navegador (F12) para mais detalhes.`);
+        
         setTimeout(() => { btn.disabled = false; btn.textContent = "Salvar Configuração"; }, 5000);
     }
   });
