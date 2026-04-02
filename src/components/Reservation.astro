@@ -25,7 +25,7 @@ import { restaurantConfig } from '../data/config.js';
       <div class="grid md:grid-cols-5 grid-cols-1">
         
         <!-- Info Panel -->
-        <div class="md:col-span-2 col-span-1 bg-neutral-800 p-8 md:p-10 text-white">
+        <div class="md:col-span-2 col-span-1 bg-neutral-800 p-8 pt-12 md:p-10 text-white">
           <h3 class="text-xl font-serif text-gold mb-8">Informações</h3>
           
           <div class="space-y-8">
@@ -73,10 +73,8 @@ import { restaurantConfig } from '../data/config.js';
               <p>* Para grupos > 10 pessoas, contacte-nos por telefone.</p>
             </div>
           </div>
-        </div>
-
-        <!-- Form Panel (Right Side) -->
-        <div class="md:col-span-3 col-span-1 bg-white text-gray-800 relative flex flex-col min-h-[500px]">
+                <!-- Form Panel (Right Side) -->
+        <div class="md:col-span-3 col-span-1 bg-white text-gray-800 relative flex flex-col md:min-h-[500px]">
           <!-- Loading Overlay -->
           <div id="loading-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
             <div class="animate-spin rounded-full h-12 w-12 border-2 border-gold border-t-transparent"></div>
@@ -84,7 +82,6 @@ import { restaurantConfig } from '../data/config.js';
           </div>
 
           <form id="reservation-form" class="space-y-8 p-8 md:p-10 flex-1">
-            <!-- Form content -->
             <div id="form-inner-content" class="space-y-8">
                 <!-- Step 1: Date & Guests -->
                 <div class="grid md:grid-cols-2 gap-6">
@@ -151,18 +148,18 @@ import { restaurantConfig } from '../data/config.js';
             </div>
           </form>
 
-          <!-- Success Message (Centered inside the same right panel) -->
-          <div id="success-message" class="hidden absolute inset-0 flex-col items-center justify-center text-center p-8 md:p-16 animate-fade-in z-20">
-              <div class="w-20 h-20 md:w-24 md:h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-10 shadow-sm">
+          <!-- Success Message (Restored Mobile Flow / Absolute Desktop) -->
+          <div id="success-message" class="hidden md:absolute md:inset-0 relative flex-col items-center justify-center text-center p-8 md:p-16 animate-fade-in z-20 bg-white">
+              <div class="w-20 h-20 md:w-24 md:h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-8 md:mb-10 shadow-sm">
                 <svg class="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 class="text-3xl md:text-5xl font-serif font-light text-gray-900 mb-6 leading-tight">Reserva Confirmada!</h3>
-              <p class="text-base md:text-lg text-gray-600 mb-10 max-w-md mx-auto leading-relaxed">
+              <h3 class="text-3xl md:text-5xl font-serif font-light text-gray-900 mb-4 md:mb-6 leading-tight">Reserva Confirmada!</h3>
+              <p class="text-base md:text-lg text-gray-600 mb-8 md:mb-10 max-w-md mx-auto leading-relaxed">
                 Obrigado pela sua preferência. Recebemos o seu pedido com sucesso e a sua mesa está garantida.
               </p>
-              <div class="bg-neutral-50 p-6 md:p-8 rounded-2xl border border-gray-100 mb-12 w-full max-w-sm">
+              <div class="bg-neutral-50 p-6 md:p-8 rounded-2xl border border-gray-100 mb-8 md:mb-12 w-full max-w-sm mx-auto">
                   <p class="text-sm text-gray-500 leading-relaxed italic">
                     Serão contactados em caso de necessidade de ajuste. Por favor, apresente-se no restaurante no horário estipulado.
                   </p>
